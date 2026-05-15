@@ -331,7 +331,7 @@ def compute_all(beers_tuple, gi_frozen):
     # Reconstruct tuple keys for excise rates
     gi["excise_rates"] = {tuple(k.split("|")): v for k, v in gi["excise_rates"].items()}
     gi["channel_discounts"] = {tuple(k.split("|")): v for k, v in gi["channel_discounts"].items()}
-    beers = list(beers_tuple)
+    beers = [dict(b) for b in beers_tuple]
     all_rows = []
     for beer in beers:
         if not beer.get("active", True):
