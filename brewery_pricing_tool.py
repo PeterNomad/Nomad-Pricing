@@ -128,24 +128,18 @@ def compute_pricing(beer: dict, gi: dict) -> list[dict]:
 
     raw_mat_per_l = raw_mat / batch_size if batch_size > 0 else 0
 
-    # Packaging per can
+    # Packaging per can — R&E is tracked SEPARATELY, not included here
     pkg_can = (
         p["printed_can"] + p["can_lid"]
         + (p["pak_tech_per_can"] if pak_tech else 0)
-        + p["carton_per_can"] + p["return_and_earn"]
+        + p["carton_per_can"]
     )
-    pkg_keg = p["keg_cost"]
+    pkg_keg = p["keg_cost"]  # full keg fitting cost per keg
 
     rows = []
 
-    def make_row(channel, pkg_type, pkg_size_l, n_units_in_pkg, pkg_cost_total,
+    def make_row(channel, pkg_type, pkg_size_l, pkg_cost_total,
                  r_and_e_per_pkg, excise_per_pkg, discount):
-        """
-        All channels derive from the full retail sell price.
-        - Retail + Online: full price
-        - Wholesale: retail * (1 - discount)
-        - Tap Room: retail + discount  (discount is negative, e.g. -2.25 means price is retail + 2.25 markup)
-        """
         cost_per_pkg = (
             excise_per_pkg
             + fixed_cost_per_l * pkg_size_l
@@ -153,22 +147,17 @@ def compute_pricing(beer: dict, gi: dict) -> list[dict]:
             + pkg_cost_total
             + raw_mat_per_l * pkg_size_l
         )
-
-        sell_before_royalty = cost_per_pkg / (1 - target_margin - royalty_pct) if (1 - target_margin - royalty_pct) > 0 else 0
-        royalty_per_pkg = sell_before_royalty * royalty_pct
-
-        # Apply channel discount
-        if channel == "Tap Room":
-            # Tap Room: add a dollar markup above the cost-based sell price
-            sell_price = sell_before_royalty - discount  # discount is negative, so we subtract a negative = add
-        else:
-            sell_price = sell_before_royalty * (1 - discount)
-
+        # Step 1: sell price to achieve target margin (before royalty)
+        sell_ex_royalty = cost_per_pkg / (1 - target_margin) if (1 - target_margin) > 0 else 0
+        # Step 2: gross up for royalty — royalty is a % of the FINAL sell price
+        sell_inc_royalty = sell_ex_royalty / (1 - royalty_pct) if royalty_pct > 0 else sell_ex_royalty
+        royalty_per_pkg = sell_inc_royalty - sell_ex_royalty
+        # Step 3: apply channel/pack discount — always multiplicative (1 - discount)
+        # Tap Room discounts are negative (e.g. -2.25), so price multiplies UP
+        sell_price = sell_inc_royalty * (1 - discount)
         sell_price_rounded = round(sell_price)
-
         margin_dollar = sell_price_rounded - cost_per_pkg
         margin_pct = margin_dollar / sell_price_rounded if sell_price_rounded > 0 else 0
-
         return {
             "Beer": beer["name"],
             "Channel": channel,
@@ -177,6 +166,7 @@ def compute_pricing(beer: dict, gi: dict) -> list[dict]:
             "Package Size (L)": pkg_size_l,
             "Excise ($)": round(excise_per_pkg, 4),
             "Fixed Cost ($)": round(fixed_cost_per_l * pkg_size_l, 4),
+            "R&E ($)": round(r_and_e_per_pkg, 4),
             "Packaging ($)": round(pkg_cost_total, 4),
             "Raw Materials ($)": round(raw_mat_per_l * pkg_size_l, 4),
             "Cost ($)": round(cost_per_pkg, 4),
@@ -187,47 +177,47 @@ def compute_pricing(beer: dict, gi: dict) -> list[dict]:
         }
 
     # ── Package definitions ───────────────────────────────────────────────
-    # Can (single)
+    # Can (single) — R&E passed separately
     can_exc = excise_per_package("Can", abv, can_size, excise_rates)
-    row_can = make_row("Retail + Online", "Can", can_size, 1, pkg_can, p["return_and_earn"], can_exc,
+    row_can = make_row("Retail + Online", "Can", can_size, pkg_can, p["return_and_earn"], can_exc,
                        channel_discounts.get(("Retail + Online", "Can"), 0))
     rows.append(row_can)
 
     # 4-Pack
     pack4_exc = can_exc * 4
-    row_4pack = make_row("Retail + Online", "4-Pack", can_size * 4, 4, pkg_can * 4, p["return_and_earn"] * 4, pack4_exc,
+    row_4pack = make_row("Retail + Online", "4-Pack", can_size * 4, pkg_can * 4, p["return_and_earn"] * 4, pack4_exc,
                          channel_discounts.get(("Retail + Online", "4-Pack"), 0))
     rows.append(row_4pack)
 
     # Case
     case_exc = can_exc * cans_per_case
-    row_case = make_row("Retail + Online", "Case", can_size * cans_per_case, cans_per_case,
+    row_case = make_row("Retail + Online", "Case", can_size * cans_per_case,
                         pkg_can * cans_per_case, p["return_and_earn"] * cans_per_case, case_exc,
                         channel_discounts.get(("Retail + Online", "Case"), 0))
     rows.append(row_case)
 
-    # Retail Keg
+    # Retail Keg — no R&E for kegs
     keg_exc = excise_per_package("Keg", abv, keg_size, excise_rates)
-    row_keg_retail = make_row("Retail + Online", "Keg", keg_size, 1, pkg_keg, 0, keg_exc,
+    row_keg_retail = make_row("Retail + Online", "Keg", keg_size, pkg_keg, 0, keg_exc,
                               channel_discounts.get(("Retail + Online", "Keg"), 0))
     rows.append(row_keg_retail)
 
     # Wholesale Case
-    row_ws_case = make_row("Wholesale", "Case", can_size * cans_per_case, cans_per_case,
+    row_ws_case = make_row("Wholesale", "Case", can_size * cans_per_case,
                            pkg_can * cans_per_case, p["return_and_earn"] * cans_per_case, case_exc,
                            channel_discounts.get(("Wholesale", "Case"), 0))
     rows.append(row_ws_case)
 
     # Wholesale Keg
-    row_ws_keg = make_row("Wholesale", "Keg", keg_size, 1, pkg_keg, 0, keg_exc,
+    row_ws_keg = make_row("Wholesale", "Keg", keg_size, pkg_keg, 0, keg_exc,
                           channel_discounts.get(("Wholesale", "Keg"), 0))
     rows.append(row_ws_keg)
 
-    # Tap Room sizes: Middy (285ml), Schooner (425ml), Jug (1140ml) — served from keg
+    # Tap Room: Middy (285ml), Schooner (425ml), Jug (1140ml) — served from keg, no packaging cost
     for tap_pkg, tap_size_l in [("Middy", 0.285), ("Schooner", 0.425), ("Jug", 1.14)]:
         tap_exc = excise_per_package("Keg", abv, tap_size_l, excise_rates)
         disc = channel_discounts.get(("Tap Room", tap_pkg), 0)
-        row_tap = make_row("Tap Room", tap_pkg, tap_size_l, 1, 0, 0, tap_exc, disc)
+        row_tap = make_row("Tap Room", tap_pkg, tap_size_l, 0, 0, tap_exc, disc)
         rows.append(row_tap)
 
     return rows
@@ -412,14 +402,15 @@ if page == "📊 Price Lookup":
 
             st.markdown("##### Cost Breakdown")
             breakdown = pd.DataFrame({
-                "Component": ["Excise", "Fixed Costs", "Packaging", "Raw Materials", "Total Cost"],
+                "Component": ["Excise", "Fixed Costs", "Return & Earn", "Packaging", "Raw Materials", "Total Cost"],
                 "Amount ($)": [
-                    r["Excise ($)"], r["Fixed Cost ($)"], r["Packaging ($)"],
+                    r["Excise ($)"], r["Fixed Cost ($)"], r["R&E ($)"], r["Packaging ($)"],
                     r["Raw Materials ($)"], r["Cost ($)"]
                 ],
                 "% of Sell Price": [
                     r["Excise ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
                     r["Fixed Cost ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
+                    r["R&E ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
                     r["Packaging ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
                     r["Raw Materials ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
                     r["Cost ($)"] / r["Sell Price ($)"] * 100 if r["Sell Price ($)"] else 0,
@@ -566,8 +557,8 @@ elif page == "⚙️ General Inputs":
     with c3:
         p["return_and_earn"] = st.number_input("Return & Earn (per can)", value=float(p["return_and_earn"]), step=0.01, format="%.3f")
         p["keg_cost"] = st.number_input("Keg cost ($)", value=float(p["keg_cost"]), step=0.01, format="%.2f")
-    total_can_pkg = p["printed_can"] + p["can_lid"] + p["carton_per_can"] + p["return_and_earn"]
-    st.info(f"Total packaging per can (without Pak-Tech): ${total_can_pkg:.4f}  |  With Pak-Tech: ${total_can_pkg + p['pak_tech_per_can']:.4f}")
+    total_can_pkg = p["printed_can"] + p["can_lid"] + p["carton_per_can"]
+    st.info(f"Packaging per can (excl. Pak-Tech & R&E): ${total_can_pkg:.4f}  |  With Pak-Tech: ${total_can_pkg + p['pak_tech_per_can']:.4f}  |  Note: R&E is tracked as a separate cost line")
 
     st.markdown("---")
 
