@@ -1,0 +1,57 @@
+{
+  "excise_periods": {
+    "4 Aug 2025": {
+      "Can|<3%": 53.72,
+      "Can|3%<=ABV<=3.5%": 62.56,
+      "Can|ABV>3.5%": 62.56,
+      "Keg|<3%": 10.57,
+      "Keg|3%<=ABV<=3.5%": 33.11,
+      "Keg|ABV>3.5%": 43.39
+    },
+    "2 Feb 2026": {
+      "Can|<3%": 54.74,
+      "Can|3%<=ABV<=3.5%": 63.75,
+      "Can|ABV>3.5%": 63.75,
+      "Keg|<3%": 10.57,
+      "Keg|3%<=ABV<=3.5%": 33.11,
+      "Keg|ABV>3.5%": 43.39
+    }
+  },
+  "active_excise_period": "4 Aug 2025",
+  "excise_rates": {
+    "Can|<3%": 53.72,
+    "Can|3%<=ABV<=3.5%": 62.56,
+    "Can|ABV>3.5%": 62.56,
+    "Keg|<3%": 10.57,
+    "Keg|3%<=ABV<=3.5%": 33.11,
+    "Keg|ABV>3.5%": 43.39
+  },
+  "fixed_costs": {
+    "rent": 170000,
+    "brewers": 162060,
+    "power": 30000,
+    "hire_et_al": 50000,
+    "rm": 190881
+  },
+  "annual_production_l": 168417,
+  "packaging": {
+    "printed_can": 0.44,
+    "can_lid": 0.065,
+    "pak_tech_per_can": 0.0695,
+    "carton_per_can": 0.06,
+    "return_and_earn": 0.15,
+    "keg_cost": 24.52
+  },
+  "channel_discounts": {
+    "Retail + Online|Can": 0.0,
+    "Retail + Online|4-Pack": 0.1,
+    "Retail + Online|Case": 0.2,
+    "Retail + Online|Keg": 0.0,
+    "Wholesale|Case": 0.25,
+    "Wholesale|Keg": 0.35,
+    "Tap Room|Middy": -2.25,
+    "Tap Room|Schooner": -1.8,
+    "Tap Room|Jug": -1.6,
+    "Tap Room|Pint": -1.7
+  }
+}
