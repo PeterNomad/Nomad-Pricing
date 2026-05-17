@@ -15,6 +15,29 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
+# PASSWORD GATE
+# Set your password in Streamlit Cloud secrets as:  APP_PASSWORD = "yourpassword"
+# Or it falls back to the hardcoded default below (change before deploying).
+# ─────────────────────────────────────────────────────────────────────────────
+_CORRECT_PASSWORD = st.secrets.get("APP_PASSWORD", "nomad2024") if hasattr(st, "secrets") else "nomad2024"
+
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    st.markdown("## 🍺 Brewery Pricing Tool")
+    st.markdown("Please enter the password to access this app.")
+    col_pw, col_btn, _ = st.columns([2, 1, 3])
+    pw_input = col_pw.text_input("Password", type="password", label_visibility="collapsed", placeholder="Enter password")
+    if col_btn.button("Login", type="primary"):
+        if pw_input == _CORRECT_PASSWORD:
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect password. Please try again.")
+    st.stop()
+
+# ─────────────────────────────────────────────────────────────────────────────
 # CORE CALCULATION HELPERS
 # ─────────────────────────────────────────────────────────────────────────────
 
