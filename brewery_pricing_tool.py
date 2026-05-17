@@ -841,6 +841,7 @@ elif page == "🔍 What-If Analysis":
         wi_margin   = st.number_input("Target Margin %",    value=base_beer["base_margin"]*100,step=0.5) / 100
         wi_royalty  = st.number_input("Royalty %",          value=base_beer["royalty_pct"]*100,step=0.5) / 100
         wi_can_size = st.number_input("Can Size (L)",       value=base_beer["can_size_l"],    step=0.005,format="%.3f")
+        wi_cpc      = st.number_input("Cans per Case",      value=int(base_beer["cans_per_case"]), step=1, min_value=1)
     with c3:
         wi_can_prop = st.number_input("Proportion Cans",    value=base_beer["proportion_cans"],min_value=0.0,max_value=1.0,step=0.05)
         wi_keg_prop = st.number_input("Proportion Kegs",    value=base_beer["proportion_kegs"],min_value=0.0,max_value=1.0,step=0.05)
@@ -857,7 +858,8 @@ elif page == "🔍 What-If Analysis":
     wi_beer = {**base_beer,
         "abv": wi_abv, "batch_size_l": wi_batch, "raw_materials": wi_raw,
         "base_margin": wi_margin, "royalty_pct": wi_royalty,
-        "can_size_l": wi_can_size, "proportion_cans": wi_can_prop,
+        "can_size_l": wi_can_size, "cans_per_case": wi_cpc,
+        "proportion_cans": wi_can_prop,
         "proportion_kegs": wi_keg_prop, "pak_tech": wi_pak_tech,
     }
     wi_gi = {**gi,
