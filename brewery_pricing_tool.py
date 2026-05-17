@@ -622,7 +622,10 @@ elif page == "⚙️ General Inputs":
     with c_save:
         if st.button("💾 Save", type="primary", use_container_width=True):
             result = save_settings(st.session_state.gi, st.session_state.beers)
-            st.success("✅ Saved!") if result is True else st.error(f"Save failed: {result}")
+            if result is True:
+                st.success("✅ Saved!")
+            else:
+                st.error(f"Save failed: {result}")
     with c_snap_label:
         snap_label = st.text_input("Snapshot label", placeholder="e.g. Post Aug 2025 excise update", label_visibility="collapsed")
     with c_snap_btn:
