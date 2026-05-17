@@ -213,11 +213,14 @@ def compute_pricing(beer: dict, gi: dict) -> list[dict]:
                           channel_discounts.get(("Wholesale", "Keg"), 0))
     rows.append(row_ws_keg)
 
-    # Tap Room: Middy (285ml), Schooner (425ml), Jug (1140ml) — served from keg, no packaging cost
-    for tap_pkg, tap_size_l in [("Middy", 0.285), ("Schooner", 0.425), ("Jug", 1.14)]:
+    # Tap Room: all serves come from a keg, so keg packaging cost is allocated per litre of serve.
+    # keg_pkg_per_l = keg_cost / keg_size  (e.g. $24.52 / 50L = $0.4904/L)
+    keg_pkg_per_l = pkg_keg / keg_size if keg_size > 0 else 0
+    for tap_pkg, tap_size_l in [("Middy", 0.285), ("Schooner", 0.425), ("Pint", 0.568), ("Jug", 1.14)]:
         tap_exc = excise_per_package("Keg", abv, tap_size_l, excise_rates)
+        tap_pkg_cost = keg_pkg_per_l * tap_size_l   # keg cost pro-rated to serve size
         disc = channel_discounts.get(("Tap Room", tap_pkg), 0)
-        row_tap = make_row("Tap Room", tap_pkg, tap_size_l, 0, 0, tap_exc, disc)
+        row_tap = make_row("Tap Room", tap_pkg, tap_size_l, tap_pkg_cost, 0, tap_exc, disc)
         rows.append(row_tap)
 
     return rows
@@ -274,6 +277,7 @@ def default_general_inputs():
             ("Wholesale", "Keg"):          0.35,
             ("Tap Room", "Middy"):        -2.25,   # negative = customer price ABOVE cost-based
             ("Tap Room", "Schooner"):     -1.80,
+            ("Tap Room", "Pint"):         -1.70,
             ("Tap Room", "Jug"):          -1.60,
         },
     }
@@ -295,10 +299,70 @@ def default_beers():
         {"name": "New Beer 1",           "abv": 0.050, "batch_size_l": 2000, "can_size_l": 0.375, "proportion_cans": 0.50, "proportion_kegs": 0.50, "cans_per_case": 16, "keg_size_l": 50, "pak_tech": True,  "raw_materials": 1500,   "base_margin": 0.37, "royalty_pct": 0.00, "active": False},
     ]
 
-if "beers" not in st.session_state:
-    st.session_state.beers = default_beers()
-if "gi" not in st.session_state:
-    st.session_state.gi = default_general_inputs()
+# ─────────────────────────────────────────────────────────────────────────────
+# PERSISTENCE — save/load settings to JSON files alongside the app
+# ─────────────────────────────────────────────────────────────────────────────
+import json, os
+
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "brewery_settings.json")
+BEERS_FILE    = os.path.join(os.path.dirname(__file__), "brewery_beers.json")
+
+def _gi_to_json(gi: dict) -> dict:
+    """Convert gi dict (with tuple keys) to JSON-safe format."""
+    out = {}
+    out["excise_rates"]   = {"|".join(k): v for k, v in gi["excise_rates"].items()}
+    out["excise_rates_2"] = {"|".join(k): v for k, v in gi.get("excise_rates_2", {}).items()}
+    out["excise_period"]  = gi.get("excise_period", 1)
+    out["fixed_costs"]    = gi["fixed_costs"]
+    out["annual_production_l"] = gi["annual_production_l"]
+    out["packaging"]      = gi["packaging"]
+    out["channel_discounts"] = {"|".join(k): v for k, v in gi["channel_discounts"].items()}
+    return out
+
+def _gi_from_json(d: dict) -> dict:
+    """Restore gi dict with tuple keys from JSON."""
+    gi = {}
+    gi["excise_rates"]   = {tuple(k.split("|")): v for k, v in d["excise_rates"].items()}
+    gi["excise_rates_2"] = {tuple(k.split("|")): v for k, v in d.get("excise_rates_2", {}).items()}
+    gi["excise_period"]  = d.get("excise_period", 1)
+    gi["fixed_costs"]    = d["fixed_costs"]
+    gi["annual_production_l"] = d["annual_production_l"]
+    gi["packaging"]      = d["packaging"]
+    gi["channel_discounts"] = {tuple(k.split("|")): v for k, v in d["channel_discounts"].items()}
+    return gi
+
+def save_settings(gi: dict, beers: list):
+    """Write current inputs to disk."""
+    try:
+        with open(SETTINGS_FILE, "w") as f:
+            json.dump(_gi_to_json(gi), f, indent=2)
+        with open(BEERS_FILE, "w") as f:
+            json.dump(beers, f, indent=2)
+        return True
+    except Exception as e:
+        return str(e)
+
+def load_settings():
+    """Load inputs from disk; fall back to defaults if files not found."""
+    gi, beers = None, None
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE) as f:
+                gi = _gi_from_json(json.load(f))
+        except Exception:
+            gi = None
+    if os.path.exists(BEERS_FILE):
+        try:
+            with open(BEERS_FILE) as f:
+                beers = json.load(f)
+        except Exception:
+            beers = None
+    return gi or default_general_inputs(), beers or default_beers()
+
+if "beers" not in st.session_state or "gi" not in st.session_state:
+    gi, beers = load_settings()
+    st.session_state.gi    = gi
+    st.session_state.beers = beers
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -375,7 +439,7 @@ if page == "📊 Price Lookup":
     packages_by_channel = {
         "Retail + Online": ["Can", "4-Pack", "Case", "Keg"],
         "Wholesale": ["Case", "Keg"],
-        "Tap Room": ["Middy", "Schooner", "Jug"],
+        "Tap Room": ["Middy", "Schooner", "Pint", "Jug"],
     }
 
     with col1:
@@ -467,7 +531,7 @@ elif page == "📋 Price Lists":
 
     with tab3:
         if not df_all.empty:
-            p_price, p_margin, p_cost = price_table(df_all, "Tap Room", ["Middy", "Schooner", "Jug"])
+            p_price, p_margin, p_cost = price_table(df_all, "Tap Room", ["Middy", "Schooner", "Pint", "Jug"])
             st.subheader("Sell Prices ($)")
             st.dataframe(p_price.style.format("${:.2f}"), use_container_width=True)
             st.subheader("Margin %")
@@ -581,10 +645,30 @@ elif page == "⚙️ General Inputs":
         st.markdown("**Tap Room ($)**")
         cd[("Tap Room", "Middy")]    = st.number_input("Middy ($)", value=float(cd.get(("Tap Room","Middy"), -2.25)), step=0.05, format="%.2f", key="tr_middy")
         cd[("Tap Room", "Schooner")] = st.number_input("Schooner ($)", value=float(cd.get(("Tap Room","Schooner"), -1.80)), step=0.05, format="%.2f", key="tr_sch")
+        cd[("Tap Room", "Pint")]     = st.number_input("Pint ($)", value=float(cd.get(("Tap Room","Pint"), -1.70)), step=0.05, format="%.2f", key="tr_pint")
         cd[("Tap Room", "Jug")]      = st.number_input("Jug ($)", value=float(cd.get(("Tap Room","Jug"), -1.60)), step=0.05, format="%.2f", key="tr_jug")
 
     st.session_state.gi = gi
     compute_all.clear()
+
+    st.markdown("---")
+    st.subheader("💾 Save Settings")
+    st.caption("Changes to inputs above are applied immediately for this session. Click Save to persist them across refreshes.")
+    col_save, col_reset, _ = st.columns([1, 1, 4])
+    with col_save:
+        if st.button("💾 Save All Settings", type="primary", use_container_width=True):
+            result = save_settings(st.session_state.gi, st.session_state.beers)
+            if result is True:
+                st.success("✅ Settings saved — will persist after refresh.")
+            else:
+                st.error(f"Save failed: {result}")
+    with col_reset:
+        if st.button("↩️ Reset to Defaults", use_container_width=True):
+            st.session_state.gi    = default_general_inputs()
+            st.session_state.beers = default_beers()
+            compute_all.clear()
+            st.success("Reset to factory defaults.")
+            st.rerun()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -625,6 +709,7 @@ elif page == "🍺 Beer Inputs":
                 })
                 st.success(f"Added {new_name}!")
                 compute_all.clear()
+                save_settings(st.session_state.gi, beers)
                 st.rerun()
 
     st.markdown("---")
@@ -656,12 +741,14 @@ elif page == "🍺 Beer Inputs":
                 if save:
                     beers[i] = beer
                     compute_all.clear()
+                    save_settings(st.session_state.gi, beers)
                     st.success("Saved!")
                     st.rerun()
 
             if st.button(f"🗑️ Delete {beer['name']}", key=f"del_{i}"):
                 beers.pop(i)
                 compute_all.clear()
+                save_settings(st.session_state.gi, beers)
                 st.rerun()
 
     st.session_state.beers = beers
