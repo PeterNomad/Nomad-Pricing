@@ -310,21 +310,16 @@ df_all = compute_all(
 # ─────────────────────────────────────────────────────────────────────────────
 # VALIDATION — detect unchanged defaults when adding a beer
 # ─────────────────────────────────────────────────────────────────────────────
-_BEER_DEFAULTS = {
-    "name":"New Beer","abv":0.050,"batch_size_l":2000,"can_size_l":0.375,
-    "proportion_cans":0.50,"proportion_kegs":0.50,"cans_per_case":16,
-    "raw_materials":1500.0,"base_margin":0.37,"royalty_pct":0.00,"pak_tech":False,
-}
-_BEER_LABELS = {
-    "name":"Beer Name","abv":"ABV","batch_size_l":"Batch Size (L)",
-    "can_size_l":"Can Size (L)","proportion_cans":"Proportion Cans",
-    "proportion_kegs":"Proportion Kegs","cans_per_case":"Cans per Case",
-    "raw_materials":"Raw Materials ($/batch)","base_margin":"Target Margin %",
-    "royalty_pct":"Royalty %","pak_tech":"Uses Pak-Tech",
-}
-
 def unchanged_fields(beer):
-    return [_BEER_LABELS[f] for f, v in _BEER_DEFAULTS.items() if beer.get(f) == v]
+    """
+    Only flag the beer name if it is still the placeholder 'New Beer'.
+    Other fields vary legitimately between beers so value-matching against
+    fixed defaults produces too many false positives.
+    """
+    issues = []
+    if beer.get("name", "").strip().lower() == "new beer":
+        issues.append("Beer Name (still set to 'New Beer')")
+    return issues
 
 
 # ─────────────────────────────────────────────────────────────────────────────
