@@ -471,11 +471,22 @@ elif page == "⚙️ General Inputs":
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🗑️ Delete", disabled=len(period_dates)<=1, use_container_width=True,
                      help="Cannot delete the only remaining period"):
+            st.session_state["confirm_del_period"] = selected_date
+            st.rerun()
+
+    if st.session_state.get("confirm_del_period") == selected_date:
+        st.warning(f"⚠️ You are about to delete the excise period **{selected_date}**. Tick to confirm:")
+        confirmed_ep = st.checkbox(f"Yes, delete period {selected_date} — this cannot be undone", key="chk_ep")
+        if st.button("Cancel delete", key="cancel_ep"):
+            st.session_state.pop("confirm_del_period", None)
+            st.rerun()
+        if confirmed_ep:
             del periods[selected_date]
-            gi["excise_periods"]      = periods
+            gi["excise_periods"]       = periods
             gi["active_excise_period"] = sorted(periods.keys())[-1]
-            gi["excise_rates"]        = periods[gi["active_excise_period"]]
+            gi["excise_rates"]         = periods[gi["active_excise_period"]]
             st.session_state.gi = gi
+            st.session_state.pop("confirm_del_period", None)
             compute_all.clear()
             st.rerun()
 
@@ -641,47 +652,64 @@ elif page == "🍺 Beer Inputs":
     st.caption("Add, edit, or deactivate beers. Prices recalculate instantly.")
     beers = st.session_state.beers
 
+    # ── Add new beer — no st.form so warnings persist across reruns ──────────
     with st.expander("➕ Add a New Beer"):
-        with st.form("add_beer"):
-            c1,c2,c3 = st.columns(3)
-            new_name     = c1.text_input("Beer Name", "New Beer")
-            new_abv      = c2.number_input("ABV", value=0.050, min_value=0.0, max_value=0.20, step=0.001, format="%.3f")
-            new_batch    = c3.number_input("Batch Size (L)", value=2000, step=100)
-            c1,c2,c3 = st.columns(3)
-            new_can_size = c1.number_input("Can Size (L)", value=0.375, step=0.005, format="%.3f")
-            new_can_prop = c2.number_input("Proportion Cans", value=0.50, min_value=0.0, max_value=1.0, step=0.05)
-            new_keg_prop = c3.number_input("Proportion Kegs", value=0.50, min_value=0.0, max_value=1.0, step=0.05)
-            c1,c2,c3 = st.columns(3)
-            new_cpc      = c1.number_input("Cans per Case", value=16, step=1)
-            new_raw      = c2.number_input("Raw Materials ($/batch)", value=1500.0, step=50.0)
-            new_margin   = c3.number_input("Target Margin %", value=37.0, step=1.0) / 100
-            c1,c2,c3 = st.columns(3)
-            new_royalty  = c1.number_input("Royalty %", value=0.0, step=1.0) / 100
-            new_pak_tech = c2.checkbox("Uses Pak-Tech")
-            submitted = st.form_submit_button("Add Beer")
-            if submitted:
-                new_beer = {
-                    "name": new_name, "abv": new_abv, "batch_size_l": new_batch,
-                    "can_size_l": new_can_size, "proportion_cans": new_can_prop,
-                    "proportion_kegs": new_keg_prop, "cans_per_case": new_cpc,
-                    "keg_size_l": 50, "pak_tech": new_pak_tech,
-                    "raw_materials": new_raw, "base_margin": new_margin,
-                    "royalty_pct": new_royalty, "active": True,
-                }
-                errors = []
-                if abs(new_can_prop + new_keg_prop - 1.0) > 0.001:
-                    errors.append(f"Proportion Cans ({new_can_prop}) + Kegs ({new_keg_prop}) = {new_can_prop+new_keg_prop:.2f} — must equal 1.0")
-                if errors:
-                    for e in errors: st.error(f"⚠️ {e}")
-                else:
-                    unchanged = unchanged_fields(new_beer)
-                    if unchanged:
-                        st.warning("⚠️ The following fields still have their **default values** — please confirm these are correct before saving:\n\n" + "\n".join(f"- **{f}**" for f in unchanged))
-                    beers.append(new_beer)
-                    compute_all.clear()
-                    save_settings(st.session_state.gi, beers)
-                    st.success(f"Added **{new_name}**!" + (" (check flagged defaults above)" if unchanged else ""))
-                    st.rerun()
+        c1,c2,c3 = st.columns(3)
+        new_name     = c1.text_input("Beer Name", value=st.session_state.get("nb_name","New Beer"), key="nb_name")
+        new_abv      = c2.number_input("ABV", value=st.session_state.get("nb_abv",0.050), min_value=0.0, max_value=0.20, step=0.001, format="%.3f", key="nb_abv")
+        new_batch    = c3.number_input("Batch Size (L)", value=st.session_state.get("nb_batch",2000), step=100, key="nb_batch")
+        c1,c2,c3 = st.columns(3)
+        new_can_size = c1.number_input("Can Size (L)", value=st.session_state.get("nb_can_size",0.375), step=0.005, format="%.3f", key="nb_can_size")
+        new_can_prop = c2.number_input("Proportion Cans", value=st.session_state.get("nb_can_prop",0.50), min_value=0.0, max_value=1.0, step=0.05, key="nb_can_prop")
+        new_keg_prop = c3.number_input("Proportion Kegs", value=st.session_state.get("nb_keg_prop",0.50), min_value=0.0, max_value=1.0, step=0.05, key="nb_keg_prop")
+        c1,c2,c3 = st.columns(3)
+        new_cpc      = c1.number_input("Cans per Case", value=st.session_state.get("nb_cpc",16), step=1, key="nb_cpc")
+        new_raw      = c2.number_input("Raw Materials ($/batch)", value=st.session_state.get("nb_raw",1500.0), step=50.0, key="nb_raw")
+        new_margin   = c3.number_input("Target Margin %", value=st.session_state.get("nb_margin",37.0), step=1.0, key="nb_margin") / 100
+        c1,c2,c3 = st.columns(3)
+        new_royalty  = c1.number_input("Royalty %", value=st.session_state.get("nb_royalty",0.0), step=1.0, key="nb_royalty") / 100
+        new_pak_tech = c2.checkbox("Uses Pak-Tech", value=st.session_state.get("nb_pak_tech",False), key="nb_pak_tech")
+
+        new_beer = {
+            "name": new_name, "abv": new_abv, "batch_size_l": new_batch,
+            "can_size_l": new_can_size, "proportion_cans": new_can_prop,
+            "proportion_kegs": new_keg_prop, "cans_per_case": new_cpc,
+            "keg_size_l": 50, "pak_tech": new_pak_tech,
+            "raw_materials": new_raw, "base_margin": new_margin,
+            "royalty_pct": new_royalty, "active": True,
+        }
+
+        # Show any pending unchanged-defaults warning
+        unchanged = unchanged_fields(new_beer)
+        if unchanged and st.session_state.get("nb_warn_shown"):
+            warn_lines = "\n".join(f"- **{f}**" for f in unchanged)
+            st.warning(
+                f"⚠️ **The following fields still have their default values** — please check before adding:\n\n"
+                + warn_lines
+                + "\n\nClick **Add Beer** again to confirm, or update the values above."
+            )
+
+        prop_ok = abs(new_can_prop + new_keg_prop - 1.0) <= 0.001
+        if not prop_ok:
+            st.error(f"⚠️ Proportion Cans ({new_can_prop}) + Kegs ({new_keg_prop}) = {new_can_prop+new_keg_prop:.2f} — must equal 1.0")
+
+        if st.button("➕ Add Beer", type="primary", disabled=not prop_ok):
+            if unchanged and not st.session_state.get("nb_warn_shown"):
+                # First click — show warning, don't add yet
+                st.session_state["nb_warn_shown"] = True
+                st.rerun()
+            else:
+                # Either no warnings, or user clicked Add a second time to confirm
+                beers.append(new_beer)
+                compute_all.clear()
+                save_settings(st.session_state.gi, beers)
+                # Clear the add-beer session state
+                for k in ["nb_name","nb_abv","nb_batch","nb_can_size","nb_can_prop",
+                          "nb_keg_prop","nb_cpc","nb_raw","nb_margin","nb_royalty",
+                          "nb_pak_tech","nb_warn_shown"]:
+                    st.session_state.pop(k, None)
+                st.success(f"Added **{new_name}**!")
+                st.rerun()
 
     st.markdown("---")
 
@@ -716,11 +744,23 @@ elif page == "🍺 Beer Inputs":
                         st.success("Saved!")
                         st.rerun()
 
-            if st.button(f"🗑️ Delete {beer['name']}", key=f"del_{i}"):
-                beers.pop(i)
-                compute_all.clear()
-                save_settings(st.session_state.gi, beers)
+            # Delete with confirm checkbox — outside form so it persists
+            confirm_key = f"confirm_del_{i}"
+            c_del, c_chk, _ = st.columns([1, 2, 3])
+            if c_del.button(f"🗑️ Delete", key=f"del_{i}"):
+                st.session_state[confirm_key] = True
                 st.rerun()
+            if st.session_state.get(confirm_key):
+                confirmed = c_chk.checkbox(
+                    f"Confirm delete **{beer['name']}** — cannot be undone",
+                    key=f"chk_{i}"
+                )
+                if confirmed:
+                    beers.pop(i)
+                    compute_all.clear()
+                    save_settings(st.session_state.gi, beers)
+                    st.session_state.pop(confirm_key, None)
+                    st.rerun()
 
     st.session_state.beers = beers
 
@@ -849,9 +889,20 @@ elif page == "📜 Price History":
     with c2:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🗑️ Delete Snapshot", use_container_width=True):
+            st.session_state["confirm_del_snap"] = sel_idx
+            st.rerun()
+
+    if st.session_state.get("confirm_del_snap") == sel_idx:
+        st.warning(f"⚠️ You are about to delete snapshot **{snap['label']}**. Tick to confirm:")
+        confirmed_snap = st.checkbox("Yes, delete this snapshot — this cannot be undone", key="chk_snap")
+        if st.button("Cancel delete", key="cancel_snap"):
+            st.session_state.pop("confirm_del_snap", None)
+            st.rerun()
+        if confirmed_snap:
             history.pop(sel_idx)
             save_history(history)
-            st.success("Deleted.")
+            st.session_state.pop("confirm_del_snap", None)
+            st.success("Snapshot deleted.")
             st.rerun()
 
     snap = history[sel_idx]
