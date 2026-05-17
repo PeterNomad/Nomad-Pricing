@@ -641,6 +641,32 @@ elif page == "⚙️ General Inputs":
             st.success("Reset to defaults.")
             st.rerun()
 
+    st.markdown("---")
+    st.subheader("⬇️ Backup Settings Files")
+    st.caption(
+        "Download these two files and upload them to your GitHub repository alongside "
+        "brewery_pricing_tool.py. This ensures your settings are not lost if the app is redeployed."
+    )
+    col_dl1, col_dl2, col_dl3 = st.columns([1, 1, 4])
+    with col_dl1:
+        settings_json = json.dumps(_gi_to_json(st.session_state.gi), indent=2)
+        st.download_button(
+            "⬇️ brewery_settings.json",
+            data=settings_json,
+            file_name="brewery_settings.json",
+            mime="application/json",
+            use_container_width=True,
+        )
+    with col_dl2:
+        beers_json = json.dumps(st.session_state.beers, indent=2)
+        st.download_button(
+            "⬇️ brewery_beers.json",
+            data=beers_json,
+            file_name="brewery_beers.json",
+            mime="application/json",
+            use_container_width=True,
+        )
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE: BEER INPUTS
