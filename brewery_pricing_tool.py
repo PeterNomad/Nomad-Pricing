@@ -795,7 +795,7 @@ elif page == "🔍 What-If Analysis":
         channels = ["Retail + Online","Wholesale","Tap Room"]
         for tab, ch in zip(st.tabs(channels), channels):
             with tab:
-                sub = merged[merged["Channel WI"]==ch][[
+                sub = merged[merged["Channel"]==ch][[
                     "Package",
                     "Cost ($) Base","Cost ($) WI",
                     "Sell Price ($) Base","Sell Price ($) WI","Price Δ ($)",
@@ -812,7 +812,7 @@ elif page == "🔍 What-If Analysis":
                     "Cost (Current)":"${:.4f}","Cost (What-If)":"${:.4f}",
                     "Price (Current)":"${:.0f}","Price (What-If)":"${:.0f}","Price Δ ($)":"${:+.2f}",
                     "Margin (Current)":"{:.1f}%","Margin (What-If)":"{:.1f}%","Margin Δ (pp)":"{:+.1f}pp",
-                }).applymap(col_d, subset=["Price Δ ($)","Margin Δ (pp)"]), use_container_width=True)
+                }).map(col_d, subset=["Price Δ ($)","Margin Δ (pp)"]), use_container_width=True)
 
         # Summary callout for retail can
         bc = base_df[(base_df["Channel"]=="Retail + Online")&(base_df["Package"]=="Can")]
@@ -890,7 +890,7 @@ elif page == "📜 Price History":
                     if isinstance(v,(int,float)): return "color: green" if v>0 else ("color: red" if v<0 else "")
                     return ""
                 st.markdown("**vs Current Prices ($)**")
-                st.dataframe(pd_delta.style.format("${:+.2f}").applymap(col_d), use_container_width=True)
+                st.dataframe(pd_delta.style.format("${:+.2f}").map(col_d), use_container_width=True)
 
     # Compare two snapshots
     if len(history) >= 2:
@@ -914,7 +914,7 @@ elif page == "📜 Price History":
                     st.dataframe(sub.style.format({
                         "sell_price A":"${:.2f}","sell_price B":"${:.2f}","Price Δ ($)":"${:+.2f}",
                         "margin_pct A":"{:.1f}%","margin_pct B":"{:.1f}%","Margin Δ (pp)":"{:+.1f}pp",
-                    }).applymap(col_d2, subset=["Price Δ ($)","Margin Δ (pp)"]), use_container_width=True)
+                    }).map(col_d2, subset=["Price Δ ($)","Margin Δ (pp)"]), use_container_width=True)
 
     st.markdown("---")
     all_hist_rows = [r for s in history for r in s["prices"]]
