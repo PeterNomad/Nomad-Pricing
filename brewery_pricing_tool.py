@@ -2,8 +2,9 @@
 Brewery Pricing & Forecast Tool
 """
 
-import math, json, os
+import math, json, os, re
 from datetime import datetime
+from difflib import SequenceMatcher
 import streamlit as st
 import pandas as pd
 
@@ -352,11 +353,220 @@ st.sidebar.title("🍺 Brewery Pricing Tool")
 page = st.sidebar.radio("Navigate", [
     "📊 Price Lookup", "📋 Price Lists", "⚙️ General Inputs",
     "🍺 Beer Inputs", "🔍 What-If Analysis", "📜 Price History",
+    "🧾 Excise Return",
 ], label_visibility="collapsed")
 
 # Sidebar: show active excise period
 st.sidebar.markdown("---")
 st.sidebar.caption(f"Active excise period: **{st.session_state.gi.get('active_excise_period','')}**")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EXCISE RETURN HELPERS
+# ─────────────────────────────────────────────────────────────────────────────
+
+EXCISE_HISTORY_FILE = os.path.join(BASE_DIR, "brewery_excise_history.json")
+
+def load_excise_history():
+    if os.path.exists(EXCISE_HISTORY_FILE):
+        try:
+            with open(EXCISE_HISTORY_FILE) as f: return json.load(f)
+        except Exception: pass
+    return []
+
+def save_excise_history(history):
+    try:
+        with open(EXCISE_HISTORY_FILE, "w") as f: json.dump(history, f, indent=2)
+    except Exception: pass
+
+def normalise_beer_name(name):
+    """Strip brand prefixes and package suffixes for fuzzy matching."""
+    n = name.lower().strip()
+    for prefix in ["nomad - ", "nomad-", "gweilo - ", "gweilo-", "nomad ", "gweilo "]:
+        if n.startswith(prefix):
+            n = n[len(prefix):]
+    n = re.sub(r'\s*-\s*(can|keg|case|single|4.pack)$', '', n)
+    n = re.sub(r'\s*(can|keg|case)$', '', n)
+    n = re.sub(r'^[a-z]{2,5}\s*-\s*', '', n)   # strip short codes like "QLC - "
+    parts = n.split(" - ")
+    if len(parts) >= 2:
+        n = max(parts, key=len)
+    return n.strip()
+
+def fuzzy_match(source_name, beer_names, threshold=0.50):
+    """Return (best_match_name, score) or (None, 0) if below threshold."""
+    best, best_score = None, 0
+    sn = normalise_beer_name(source_name)
+    for b in beer_names:
+        score = SequenceMatcher(None, sn, normalise_beer_name(b)).ratio()
+        if score > best_score:
+            best, best_score = b, score
+    return (best, best_score) if best_score >= threshold else (None, 0)
+
+SERVE_SIZE_L = {
+    "jug - 1140ml": 1.140, "jug": 1.140,
+    "schooner - 425ml": 0.425, "schooner": 0.425,
+    "happy hour schooner": 0.425, "happy hour": 0.425,
+    "pint - 570ml": 0.568, "pint - 568ml": 0.568, "pint": 0.568,
+    "middy - 285ml": 0.285, "middy": 0.285,
+    "growler - 1900ml": 1.900, "growler": 1.900,
+    "single": "can",
+    "4-pack": "4-pack",
+    "case": "case", "case special": "case",
+}
+
+XERO_EXCLUDE = ["delivery", "rent", "rubbish", "note", "kegswappa",
+                "total", "summary", "sales by", "other sales", "cash sales",
+                "credits", "total sales"]
+
+def parse_square_email(body_text, beer_lookup):
+    """
+    Parse Square email body. Returns list of dicts:
+    {beer_name, source_name, package_type (can/keg), serve, qty, litres_each, total_litres, matched, score}
+    beer_lookup: {beer_name: {can_size_l, cans_per_case, keg_size_l, abv}}
+    """
+    lines = [l.strip() for l in body_text.split("\r\n") if l.strip()]
+    start = next((i for i, l in enumerate(lines) if l == "Item Sales"), 0)
+    lines = lines[start:]
+
+    parent_pat = re.compile(r'^(.+?)\s+×\s+(\d+)\s+\t\$[\d,]+\.\d+')
+
+    def is_beer_parent(name):
+        return bool(re.search(r'\s-\s(Can|Keg)$', name))
+
+    current_parent = None
+    current_is_ours = False
+    results = []
+
+    for line in lines:
+        m = parent_pat.match(line)
+        if not m: continue
+        name = m.group(1).strip()
+        qty  = int(m.group(2))
+
+        if is_beer_parent(name):
+            current_parent   = name
+            current_is_ours  = ("Nomad" in name or "Gweilo" in name)
+        elif current_is_ours and current_parent:
+            serve_key = name.lower()
+            if serve_key not in SERVE_SIZE_L: continue
+            size_info = SERVE_SIZE_L[serve_key]
+            pkg_type  = "keg" if re.search(r'\s-\sKeg$', current_parent) else "can"
+
+            # Resolve litres
+            matched_beer, score = fuzzy_match(current_parent,
+                                              list(beer_lookup.keys()))
+            beer_data = beer_lookup.get(matched_beer, {})
+            can_size  = beer_data.get("can_size_l",  0.375)
+            cpc       = beer_data.get("cans_per_case", 16)
+
+            if isinstance(size_info, float):
+                litres_each = size_info
+            elif size_info == "can":
+                litres_each = can_size
+            elif size_info == "4-pack":
+                litres_each = can_size * 4
+            elif size_info == "case":
+                litres_each = can_size * cpc
+            else:
+                litres_each = 0
+
+            results.append({
+                "source": "Tap Room (Square)",
+                "source_name": current_parent,
+                "serve": name,
+                "beer_name": matched_beer,
+                "match_score": round(score, 2),
+                "package_type": pkg_type,
+                "qty": qty,
+                "litres_each": round(litres_each, 4),
+                "total_litres": round(qty * litres_each, 4),
+                "abv": beer_data.get("abv", None),
+            })
+    return results
+
+def parse_xero_report(df_raw, beer_lookup):
+    """
+    Parse Xero Sales by Item report dataframe.
+    Returns list of dicts similar to parse_square_email.
+    """
+    # Find header row
+    header_row = None
+    for i, row in df_raw.iterrows():
+        if "Item" in str(row.values) and "Quantity" in str(row.values):
+            header_row = i
+            break
+    if header_row is None:
+        return []
+    df_raw.columns = df_raw.iloc[header_row]
+    df = df_raw.iloc[header_row+1:].reset_index(drop=True)
+
+    results = []
+    for _, row in df.iterrows():
+        item = row.get("Item","")
+        qty_raw = row.get("Quantity Sold", None)
+        if not isinstance(item, str) or not item.strip(): continue
+        item_l = item.lower()
+        if any(kw in item_l for kw in XERO_EXCLUDE): continue
+        try:
+            qty = int(float(qty_raw))
+        except: continue
+        if qty <= 0: continue
+
+        # Detect package
+        keg_size_m = re.search(r'(\d+)l\s*keg|keg.*?(\d+)l', item_l)
+        if keg_size_m:
+            keg_l = int(keg_size_m.group(1) or keg_size_m.group(2))
+            pkg_type = "keg"
+        elif "keg" in item_l:
+            keg_l = 50
+            pkg_type = "keg"
+        else:
+            pkg_type = "can"
+            keg_l = None
+
+        matched_beer, score = fuzzy_match(item, list(beer_lookup.keys()))
+        beer_data = beer_lookup.get(matched_beer, {})
+        can_size  = beer_data.get("can_size_l",  0.375)
+        cpc       = beer_data.get("cans_per_case", 16)
+
+        if pkg_type == "keg":
+            litres_each = keg_l if keg_l else 50
+        else:
+            litres_each = can_size * cpc
+
+        results.append({
+            "source": "Wholesale (Xero)",
+            "source_name": item,
+            "serve": "Case" if pkg_type == "can" else f"Keg {keg_l or 50}L",
+            "beer_name": matched_beer,
+            "match_score": round(score, 2),
+            "package_type": pkg_type,
+            "qty": qty,
+            "litres_each": round(litres_each, 4),
+            "total_litres": round(qty * litres_each, 4),
+            "abv": beer_data.get("abv", None),
+        })
+    return results
+
+def compute_excise_summary(rows):
+    """
+    Summarise rows into the 4 excise buckets:
+    Can ≤3.5%, Can >3.5%, Keg ≤3.5%, Keg >3.5%
+    """
+    buckets = {
+        ("can", "lte35"): 0.0,
+        ("can", "gt35"):  0.0,
+        ("keg", "lte35"): 0.0,
+        ("keg", "gt35"):  0.0,
+    }
+    for r in rows:
+        abv = r.get("abv")
+        if abv is None: continue
+        pkg  = r["package_type"]
+        buck = "lte35" if abv <= 0.035 else "gt35"
+        buckets[(pkg, buck)] += r["total_litres"]
+    return buckets
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1022,3 +1232,283 @@ elif page == "📜 Price History":
         st.download_button("⬇️ Export Full History (CSV)",
                            pd.DataFrame(all_hist_rows).to_csv(index=False),
                            "price_history.csv","text/csv")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PAGE: EXCISE RETURN
+# ─────────────────────────────────────────────────────────────────────────────
+elif page == "🧾 Excise Return":
+    st.title("🧾 Excise Return")
+    st.caption("Calculate monthly beer volume by ABV category for ATO excise reporting.")
+
+    # Build beer lookup from current beer list
+    beer_lookup = {
+        b["name"]: {
+            "abv":          b["abv"],
+            "can_size_l":   b["can_size_l"],
+            "cans_per_case":b["cans_per_case"],
+            "keg_size_l":   b.get("keg_size_l", 50),
+        }
+        for b in st.session_state.beers if b.get("active")
+    }
+    beer_names_list = list(beer_lookup.keys())
+
+    # ── Period selector ───────────────────────────────────────────────────────
+    st.subheader("1. Select Period")
+    col_y, col_m, _ = st.columns([1,1,4])
+    now = datetime.now()
+    sel_year  = col_y.number_input("Year",  value=now.year, min_value=2020, max_value=2030, step=1)
+    months    = ["January","February","March","April","May","June",
+                 "July","August","September","October","November","December"]
+    sel_month = col_m.selectbox("Month", months, index=now.month-2 if now.month > 1 else 11)
+    period_key = f"{sel_year}-{months.index(sel_month)+1:02d}"
+    period_label = f"{sel_month} {sel_year}"
+
+    st.markdown("---")
+
+    # ── Session state for this period's rows ──────────────────────────────────
+    rows_key = f"excise_rows_{period_key}"
+    if rows_key not in st.session_state:
+        st.session_state[rows_key] = []
+
+    all_rows = st.session_state[rows_key]
+
+    # ── Upload Square email ───────────────────────────────────────────────────
+    st.subheader("2. Upload Square Tap Room Report (optional)")
+    st.caption("Upload the Square Sales Report email saved as a .msg file.")
+    sq_file = st.file_uploader("Square .msg file", type=["msg"], key=f"sq_{period_key}")
+    if sq_file:
+        try:
+            import extract_msg, tempfile
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".msg") as tmp:
+                tmp.write(sq_file.read())
+                tmp_path = tmp.name
+            msg = extract_msg.Message(tmp_path)
+            os.unlink(tmp_path)
+            sq_rows = parse_square_email(msg.body, beer_lookup)
+            if sq_rows:
+                # Remove any existing Square rows and replace
+                all_rows = [r for r in all_rows if r["source"] != "Tap Room (Square)"]
+                all_rows.extend(sq_rows)
+                st.session_state[rows_key] = all_rows
+                st.success(f"✅ Extracted {len(sq_rows)} line items from Square report.")
+            else:
+                st.warning("No Nomad/Gweilo beer items found in this email.")
+        except Exception as e:
+            st.error(f"Could not parse Square email: {e}")
+
+    st.markdown("---")
+
+    # ── Upload Xero report ────────────────────────────────────────────────────
+    st.subheader("3. Upload Xero Wholesale Report (optional)")
+    st.caption("Upload the Xero 'Sales by Item' report as an .xls or .xlsx file.")
+    xero_file = st.file_uploader("Xero .xls / .xlsx file",
+                                  type=["xls","xlsx"], key=f"xero_{period_key}")
+    if xero_file:
+        try:
+            engine = "xlrd" if xero_file.name.endswith(".xls") else "openpyxl"
+            df_raw = pd.read_excel(xero_file, engine=engine, header=None)
+            xero_rows = parse_xero_report(df_raw, beer_lookup)
+            if xero_rows:
+                all_rows = [r for r in all_rows if r["source"] != "Wholesale (Xero)"]
+                all_rows.extend(xero_rows)
+                st.session_state[rows_key] = all_rows
+                st.success(f"✅ Extracted {len(xero_rows)} line items from Xero report.")
+            else:
+                st.warning("No beer items found in this Xero report.")
+        except Exception as e:
+            st.error(f"Could not parse Xero file: {e}")
+
+    st.markdown("---")
+
+    # ── Review & edit parsed rows ─────────────────────────────────────────────
+    st.subheader("4. Review, Edit & Add Manual Entries")
+
+    if all_rows:
+        # Check for unmatched or low-confidence rows
+        low_conf = [r for r in all_rows if r["beer_name"] is None or r["match_score"] < 0.6]
+        if low_conf:
+            st.warning(
+                f"⚠️ **{len(low_conf)} rows could not be confidently matched** to a beer in your list. "
+                "Please review and assign them below, or delete if not applicable."
+            )
+
+    # Show editable table of all rows
+    if all_rows:
+        st.markdown("**Current entries** — edit beer assignment, quantities or litres, or delete rows:")
+        for idx, row in enumerate(list(all_rows)):
+            conf_color = "🟢" if row["match_score"] >= 0.75 else ("🟡" if row["match_score"] >= 0.50 else "🔴")
+            with st.expander(
+                f"{conf_color} {row['source_name']}  |  {row['serve']}  "
+                f"|  qty={row['qty']}  |  {row['total_litres']:.3f} L  "
+                f"|  → {row['beer_name'] or '⚠️ UNMATCHED'}",
+                expanded=(row["beer_name"] is None or row["match_score"] < 0.6)
+            ):
+                c1, c2, c3, c4 = st.columns([2,1,1,1])
+                new_beer = c1.selectbox(
+                    "Beer",
+                    ["— unmatched —"] + beer_names_list,
+                    index=(beer_names_list.index(row["beer_name"]) + 1
+                           if row["beer_name"] in beer_names_list else 0),
+                    key=f"eb_{period_key}_{idx}"
+                )
+                new_qty = c2.number_input("Qty", value=int(row["qty"]),
+                                          min_value=0, step=1,
+                                          key=f"eq_{period_key}_{idx}")
+                new_le  = c3.number_input("Litres each", value=float(row["litres_each"]),
+                                          min_value=0.0, step=0.001, format="%.4f",
+                                          key=f"el_{period_key}_{idx}")
+                if c4.button("🗑️", key=f"ed_{period_key}_{idx}", help="Delete this row"):
+                    all_rows.pop(idx)
+                    st.session_state[rows_key] = all_rows
+                    st.rerun()
+
+                # Apply edits live
+                resolved_beer = new_beer if new_beer != "— unmatched —" else None
+                all_rows[idx]["beer_name"]    = resolved_beer
+                all_rows[idx]["qty"]          = new_qty
+                all_rows[idx]["litres_each"]  = new_le
+                all_rows[idx]["total_litres"] = round(new_qty * new_le, 4)
+                if resolved_beer and resolved_beer in beer_lookup:
+                    all_rows[idx]["abv"] = beer_lookup[resolved_beer]["abv"]
+                st.session_state[rows_key] = all_rows
+
+    # Add manual row
+    st.markdown("---")
+    with st.expander("➕ Add Manual Entry"):
+        mc1, mc2, mc3, mc4, mc5 = st.columns([2,1,1,1,1])
+        man_beer  = mc1.selectbox("Beer", ["— select —"] + beer_names_list, key=f"mb_{period_key}")
+        man_src   = mc2.selectbox("Source", ["Tap Room","Wholesale","Other"], key=f"ms_{period_key}")
+        man_serve = mc3.text_input("Serve/Package", "Keg 50L", key=f"msrv_{period_key}")
+        man_qty   = mc4.number_input("Qty", value=1, min_value=1, step=1, key=f"mq_{period_key}")
+        man_le    = mc5.number_input("Litres each", value=50.0, min_value=0.0,
+                                     step=0.5, format="%.3f", key=f"mle_{period_key}")
+        if st.button("➕ Add Row", key=f"madd_{period_key}"):
+            if man_beer != "— select —":
+                pkg_type = "keg" if "keg" in man_serve.lower() else "can"
+                abv = beer_lookup.get(man_beer, {}).get("abv", None)
+                all_rows.append({
+                    "source": man_src,
+                    "source_name": f"Manual: {man_beer}",
+                    "serve": man_serve,
+                    "beer_name": man_beer,
+                    "match_score": 1.0,
+                    "package_type": pkg_type,
+                    "qty": man_qty,
+                    "litres_each": man_le,
+                    "total_litres": round(man_qty * man_le, 4),
+                    "abv": abv,
+                })
+                st.session_state[rows_key] = all_rows
+                st.success(f"Added {man_beer} — {man_serve} × {man_qty}")
+                st.rerun()
+
+    st.markdown("---")
+
+    # ── Excise Summary ────────────────────────────────────────────────────────
+    st.subheader("5. Excise Summary")
+
+    matched_rows = [r for r in all_rows if r["beer_name"] and r["abv"] is not None]
+    unmatched_count = len([r for r in all_rows if not r["beer_name"] or r["abv"] is None])
+
+    if not matched_rows:
+        st.info("No matched rows yet. Upload files or add manual entries above.")
+    else:
+        if unmatched_count:
+            st.warning(f"⚠️ {unmatched_count} rows are excluded from the summary (unmatched — assign a beer above).")
+
+        buckets = compute_excise_summary(matched_rows)
+
+        # Summary table
+        summary_df = pd.DataFrame([
+            {"Package": "Can", "ABV Category": "≤ 3.5%", "Total Litres": round(buckets[("can","lte35")], 3)},
+            {"Package": "Can", "ABV Category": "> 3.5%", "Total Litres": round(buckets[("can","gt35")],  3)},
+            {"Package": "Keg", "ABV Category": "≤ 3.5%", "Total Litres": round(buckets[("keg","lte35")], 3)},
+            {"Package": "Keg", "ABV Category": "> 3.5%", "Total Litres": round(buckets[("keg","gt35")],  3)},
+        ])
+        summary_df["Total Litres"] = summary_df["Total Litres"].apply(lambda x: f"{x:,.3f}")
+        st.dataframe(summary_df, hide_index=True, use_container_width=False)
+
+        # Beer-level breakdown
+        st.markdown("##### Volume by Beer")
+        beer_summary = {}
+        for r in matched_rows:
+            key = (r["beer_name"], r["package_type"],
+                   "≤3.5%" if r["abv"] <= 0.035 else ">3.5%")
+            beer_summary[key] = beer_summary.get(key, 0) + r["total_litres"]
+
+        brows = []
+        for (beer, pkg, cat), vol in sorted(beer_summary.items()):
+            abv_val = beer_lookup.get(beer, {}).get("abv", 0)
+            brows.append({"Beer": beer, "Package": pkg.title(),
+                          "ABV": f"{abv_val*100:.1f}%", "Category": cat,
+                          "Litres": round(vol, 3)})
+        st.dataframe(pd.DataFrame(brows), hide_index=True, use_container_width=True)
+
+        # ── Save to history ───────────────────────────────────────────────────
+        st.markdown("---")
+        col_save, col_dl, _ = st.columns([1,1,4])
+        if col_save.button("💾 Save to Excise History", type="primary"):
+            history = load_excise_history()
+            # Remove any existing entry for this period
+            history = [h for h in history if h["period_key"] != period_key]
+            history.append({
+                "period_key":   period_key,
+                "period_label": period_label,
+                "saved_at":     datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "buckets": {"|".join(k): v for k, v in buckets.items()},
+                "rows":    matched_rows,
+                "beer_summary": brows,
+            })
+            save_excise_history(history)
+            st.success(f"✅ Saved excise return for {period_label}.")
+
+        # CSV download of detail rows
+        detail_df = pd.DataFrame(matched_rows)[
+            ["source","beer_name","package_type","serve","qty","litres_each","total_litres","abv"]
+        ]
+        col_dl.download_button(
+            "⬇️ Download Detail CSV",
+            data=detail_df.to_csv(index=False),
+            file_name=f"excise_{period_key}.csv",
+            mime="text/csv",
+        )
+
+    st.markdown("---")
+
+    # ── Historical excise returns ─────────────────────────────────────────────
+    st.subheader("📋 Saved Excise Returns")
+    history = load_excise_history()
+    if not history:
+        st.caption("No saved returns yet.")
+    else:
+        hist_labels = [f"{h['period_label']}  (saved {h['saved_at']})" for h in history]
+        sel_hist = st.selectbox("View saved return", range(len(hist_labels)),
+                                format_func=lambda i: hist_labels[i])
+        h = history[sel_hist]
+        st.markdown(f"**{h['period_label']}** — saved {h['saved_at']}")
+
+        buckets_h = {tuple(k.split("|")): v for k, v in h["buckets"].items()}
+        hist_df = pd.DataFrame([
+            {"Package":"Can","ABV Category":"≤ 3.5%","Total Litres": f"{buckets_h.get(('can','lte35'),0):,.3f}"},
+            {"Package":"Can","ABV Category":"> 3.5%","Total Litres": f"{buckets_h.get(('can','gt35'),0):,.3f}"},
+            {"Package":"Keg","ABV Category":"≤ 3.5%","Total Litres": f"{buckets_h.get(('keg','lte35'),0):,.3f}"},
+            {"Package":"Keg","ABV Category":"> 3.5%","Total Litres": f"{buckets_h.get(('keg','gt35'),0):,.3f}"},
+        ])
+        st.dataframe(hist_df, hide_index=True, use_container_width=False)
+
+        if h.get("beer_summary"):
+            st.markdown("##### By Beer")
+            st.dataframe(pd.DataFrame(h["beer_summary"]), hide_index=True, use_container_width=True)
+
+        if h.get("rows"):
+            dl_df = pd.DataFrame(h["rows"])[
+                ["source","beer_name","package_type","serve","qty","litres_each","total_litres","abv"]
+            ]
+            st.download_button(
+                "⬇️ Download Detail CSV",
+                data=dl_df.to_csv(index=False),
+                file_name=f"excise_{h['period_key']}.csv",
+                mime="text/csv",
+                key=f"hist_dl_{sel_hist}",
+            )
