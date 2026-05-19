@@ -549,10 +549,19 @@ def parse_xero_report(df_raw, beer_lookup):
         })
     return results
 
+def taxable_ethanol(beer_litres, abv):
+    """
+    ATO excise formula: (ABV% - 1.15%) × beer volume in litres = litres of pure ethanol
+    The 1.15% deduction is a standard ATO allowance applied to all beer.
+    """
+    return max(abv - 0.0115, 0) * beer_litres
+
 def compute_excise_summary(rows):
     """
     Summarise rows into the 4 excise buckets:
     Can ≤3.5%, Can >3.5%, Keg ≤3.5%, Keg >3.5%
+    Values are litres of PURE ETHANOL (taxable), not beer volume.
+    Formula: (ABV - 1.15%) × beer_litres
     """
     buckets = {
         ("can", "lte35"): 0.0,
@@ -565,7 +574,7 @@ def compute_excise_summary(rows):
         if abv is None: continue
         pkg  = r["package_type"]
         buck = "lte35" if abv <= 0.035 else "gt35"
-        buckets[(pkg, buck)] += r["total_litres"]
+        buckets[(pkg, buck)] += taxable_ethanol(r["total_litres"], abv)
     return buckets
 
 
@@ -1420,30 +1429,39 @@ elif page == "🧾 Excise Return":
         buckets = compute_excise_summary(matched_rows)
 
         # Summary table
+        st.caption("**Taxable pure ethanol litres** = (ABV% − 1.15%) × beer volume. Enter these figures in your ATO excise return.")
         summary_df = pd.DataFrame([
-            {"Package": "Can", "ABV Category": "≤ 3.5%", "Total Litres": round(buckets[("can","lte35")], 3)},
-            {"Package": "Can", "ABV Category": "> 3.5%", "Total Litres": round(buckets[("can","gt35")],  3)},
-            {"Package": "Keg", "ABV Category": "≤ 3.5%", "Total Litres": round(buckets[("keg","lte35")], 3)},
-            {"Package": "Keg", "ABV Category": "> 3.5%", "Total Litres": round(buckets[("keg","gt35")],  3)},
+            {"Package": "Can", "ABV Category": "≤ 3.5%", "Taxable Ethanol (L)": round(buckets[("can","lte35")], 3)},
+            {"Package": "Can", "ABV Category": "> 3.5%", "Taxable Ethanol (L)": round(buckets[("can","gt35")],  3)},
+            {"Package": "Keg", "ABV Category": "≤ 3.5%", "Taxable Ethanol (L)": round(buckets[("keg","lte35")], 3)},
+            {"Package": "Keg", "ABV Category": "> 3.5%", "Taxable Ethanol (L)": round(buckets[("keg","gt35")],  3)},
         ])
-        summary_df["Total Litres"] = summary_df["Total Litres"].apply(lambda x: f"{x:,.3f}")
+        summary_df["Taxable Ethanol (L)"] = summary_df["Taxable Ethanol (L)"].apply(lambda x: f"{x:,.3f}")
         st.dataframe(summary_df, hide_index=True, use_container_width=False)
 
         # Beer-level breakdown
         st.markdown("##### Volume by Beer")
         beer_summary = {}
         for r in matched_rows:
+            abv = r["abv"]
             key = (r["beer_name"], r["package_type"],
-                   "≤3.5%" if r["abv"] <= 0.035 else ">3.5%")
-            beer_summary[key] = beer_summary.get(key, 0) + r["total_litres"]
+                   "≤3.5%" if abv <= 0.035 else ">3.5%")
+            if key not in beer_summary:
+                beer_summary[key] = {"beer_litres": 0.0, "ethanol_litres": 0.0}
+            beer_summary[key]["beer_litres"]    += r["total_litres"]
+            beer_summary[key]["ethanol_litres"] += taxable_ethanol(r["total_litres"], abv)
 
         brows = []
-        for (beer, pkg, cat), vol in sorted(beer_summary.items()):
+        for (beer, pkg, cat), vols in sorted(beer_summary.items()):
             abv_val = beer_lookup.get(beer, {}).get("abv", 0)
-            brows.append({"Beer": beer, "Package": pkg.title(),
-                          "ABV": f"{abv_val*100:.1f}%", "Category": cat,
-                          "Litres": round(vol, 3)})
+            brows.append({
+                "Beer": beer, "Package": pkg.title(),
+                "ABV": f"{abv_val*100:.1f}%", "Category": cat,
+                "Beer Volume (L)": round(vols["beer_litres"], 3),
+                "Taxable Ethanol (L)": round(vols["ethanol_litres"], 3),
+            })
         st.dataframe(pd.DataFrame(brows), hide_index=True, use_container_width=True)
+        st.caption("Taxable Ethanol (L) = (ABV% − 1.15%) × Beer Volume. This is the figure submitted to the ATO.")
 
         # ── Save to history ───────────────────────────────────────────────────
         st.markdown("---")
@@ -1459,6 +1477,7 @@ elif page == "🧾 Excise Return":
                 "buckets": {"|".join(k): v for k, v in buckets.items()},
                 "rows":    matched_rows,
                 "beer_summary": brows,
+                "note": "Buckets and Taxable Ethanol (L) = (ABV% - 1.15%) x beer volume",
             })
             save_excise_history(history)
             st.success(f"✅ Saved excise return for {period_label}.")
