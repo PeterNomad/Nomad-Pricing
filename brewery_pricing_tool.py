@@ -189,6 +189,76 @@ SETTINGS_FILE = os.path.join(BASE_DIR, "brewery_settings.json")
 BEERS_FILE    = os.path.join(BASE_DIR, "brewery_beers.json")
 HISTORY_FILE  = os.path.join(BASE_DIR, "brewery_price_history.json")
 
+# ─────────────────────────────────────────────────────────────────────────────
+# GITHUB SYNC
+# Streamlit Cloud's local disk is wiped and rebuilt from the GitHub repo on
+# every reboot/redeploy/sleep-wake cycle. Anything saved only to local disk
+# (the files above) is lost the moment that happens. To make data durable we
+# write every save straight back to the GitHub repo via the Contents API, in
+# addition to the local copy. Local disk is still used as a same-session
+# cache and as a fallback if GitHub is unreachable.
+#
+# Required Streamlit Cloud secrets (App settings → Secrets):
+#   GITHUB_REPO   = "yourusername/your-repo-name"
+#   GITHUB_TOKEN  = "github_pat_..."   (fine-grained token, Contents: Read & Write, scoped to this repo)
+#   GITHUB_BRANCH = "main"             (optional, defaults to "main")
+# ─────────────────────────────────────────────────────────────────────────────
+import base64
+import requests
+
+GITHUB_REPO    = st.secrets.get("GITHUB_REPO", "")        if hasattr(st, "secrets") else ""
+GITHUB_TOKEN   = st.secrets.get("GITHUB_TOKEN", "")       if hasattr(st, "secrets") else ""
+GITHUB_BRANCH  = st.secrets.get("GITHUB_BRANCH", "main")  if hasattr(st, "secrets") else "main"
+GITHUB_ENABLED = bool(GITHUB_REPO and GITHUB_TOKEN)
+
+def _gh_headers():
+    return {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+def github_get_file(filename):
+    """Fetch a file's content + sha from the repo root. Returns (content_str, sha) or (None, None)."""
+    if not GITHUB_ENABLED:
+        return None, None
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
+    try:
+        resp = requests.get(url, headers=_gh_headers(), params={"ref": GITHUB_BRANCH}, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            return base64.b64decode(data["content"]).decode("utf-8"), data["sha"]
+        return None, None
+    except Exception:
+        return None, None
+
+@st.cache_data(ttl=20, show_spinner=False)
+def github_get_file_cached(filename):
+    """Short-TTL cache so repeat page views don't hammer the GitHub API."""
+    return github_get_file(filename)
+
+def github_put_file(filename, content_str, message):
+    """Create or update a file at the repo root. Returns True on success."""
+    if not GITHUB_ENABLED:
+        return False
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
+    _, sha = github_get_file(filename)   # always fetch a fresh sha, never the cached one
+    payload = {
+        "message": message,
+        "content": base64.b64encode(content_str.encode("utf-8")).decode("utf-8"),
+        "branch": GITHUB_BRANCH,
+    }
+    if sha:
+        payload["sha"] = sha
+    try:
+        resp = requests.put(url, headers=_gh_headers(), json=payload, timeout=10)
+        ok = resp.status_code in (200, 201)
+        if ok:
+            github_get_file_cached.clear()
+        return ok
+    except Exception:
+        return False
+
 def _ep_to_json(ep):
     return {d: {"|".join(k): v for k, v in rates.items()} for d, rates in ep.items()}
 
@@ -224,26 +294,48 @@ def _gi_from_json(d):
     }
 
 def save_settings(gi, beers):
+    settings_json = json.dumps(_gi_to_json(gi), indent=2)
+    beers_json    = json.dumps(beers, indent=2)
     try:
-        with open(SETTINGS_FILE, "w") as f: json.dump(_gi_to_json(gi), f, indent=2)
-        with open(BEERS_FILE,    "w") as f: json.dump(beers, f, indent=2)
-        return True
+        with open(SETTINGS_FILE, "w") as f: f.write(settings_json)
+        with open(BEERS_FILE,    "w") as f: f.write(beers_json)
     except Exception as e:
         return str(e)
+    if GITHUB_ENABLED:
+        ok1 = github_put_file("brewery_settings.json", settings_json, "Update brewery_settings.json via app")
+        ok2 = github_put_file("brewery_beers.json",     beers_json,    "Update brewery_beers.json via app")
+        if not (ok1 and ok2):
+            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+    return True
 
 def load_settings():
     gi, beers = None, None
-    if os.path.exists(SETTINGS_FILE):
+    raw_settings, raw_beers = (None, None)
+    if GITHUB_ENABLED:
+        raw_settings, _ = github_get_file_cached("brewery_settings.json")
+        raw_beers,    _ = github_get_file_cached("brewery_beers.json")
+    if raw_settings:
+        try: gi = _gi_from_json(json.loads(raw_settings))
+        except Exception: gi = None
+    elif os.path.exists(SETTINGS_FILE):
         try:
             with open(SETTINGS_FILE) as f: gi = _gi_from_json(json.load(f))
         except Exception: gi = None
-    if os.path.exists(BEERS_FILE):
+    if raw_beers:
+        try: beers = json.loads(raw_beers)
+        except Exception: beers = None
+    elif os.path.exists(BEERS_FILE):
         try:
             with open(BEERS_FILE) as f: beers = json.load(f)
         except Exception: beers = None
     return gi or default_general_inputs(), beers or default_beers()
 
 def load_history():
+    if GITHUB_ENABLED:
+        raw, _ = github_get_file_cached("brewery_price_history.json")
+        if raw:
+            try: return json.loads(raw)
+            except Exception: pass
     if os.path.exists(HISTORY_FILE):
         try:
             with open(HISTORY_FILE) as f: return json.load(f)
@@ -251,9 +343,12 @@ def load_history():
     return []
 
 def save_history(history):
+    content = json.dumps(history, indent=2)
     try:
-        with open(HISTORY_FILE, "w") as f: json.dump(history, f, indent=2)
+        with open(HISTORY_FILE, "w") as f: f.write(content)
     except Exception: pass
+    if GITHUB_ENABLED:
+        github_put_file("brewery_price_history.json", content, "Update brewery_price_history.json via app")
 
 def record_price_snapshot(label, beers, gi):
     history = load_history()
@@ -359,6 +454,10 @@ page = st.sidebar.radio("Navigate", [
 # Sidebar: show active excise period
 st.sidebar.markdown("---")
 st.sidebar.caption(f"Active excise period: **{st.session_state.gi.get('active_excise_period','')}**")
+if GITHUB_ENABLED:
+    st.sidebar.caption(f"☁️ GitHub sync: **on** ({GITHUB_REPO} @ {GITHUB_BRANCH})")
+else:
+    st.sidebar.caption("⚠️ GitHub sync: **off** — saves only last until the app reboots. Add `GITHUB_REPO` and `GITHUB_TOKEN` to Secrets to enable.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -368,6 +467,11 @@ st.sidebar.caption(f"Active excise period: **{st.session_state.gi.get('active_ex
 EXCISE_HISTORY_FILE = os.path.join(BASE_DIR, "brewery_excise_history.json")
 
 def load_excise_history():
+    if GITHUB_ENABLED:
+        raw, _ = github_get_file_cached("brewery_excise_history.json")
+        if raw:
+            try: return json.loads(raw)
+            except Exception: pass
     if os.path.exists(EXCISE_HISTORY_FILE):
         try:
             with open(EXCISE_HISTORY_FILE) as f: return json.load(f)
@@ -375,9 +479,15 @@ def load_excise_history():
     return []
 
 def save_excise_history(history):
+    content = json.dumps(history, indent=2)
     try:
-        with open(EXCISE_HISTORY_FILE, "w") as f: json.dump(history, f, indent=2)
-    except Exception: pass
+        with open(EXCISE_HISTORY_FILE, "w") as f: f.write(content)
+    except Exception as e:
+        return str(e)
+    if GITHUB_ENABLED:
+        if not github_put_file("brewery_excise_history.json", content, "Update brewery_excise_history.json via app"):
+            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+    return True
 
 def normalise_beer_name(name):
     """Strip brand prefixes and package suffixes for fuzzy matching."""
@@ -884,30 +994,38 @@ elif page == "⚙️ General Inputs":
             st.rerun()
 
     st.markdown("---")
-    st.subheader("⬇️ Backup Settings Files")
-    st.caption(
-        "Download these two files and upload them to your GitHub repository alongside "
-        "brewery_pricing_tool.py. This ensures your settings are not lost if the app is redeployed."
-    )
-    col_dl1, col_dl2, col_dl3 = st.columns([1, 1, 4])
+    st.subheader("☁️ Data Sync")
+    if GITHUB_ENABLED:
+        st.success(
+            f"GitHub sync is **on**. Every Save/Snapshot writes straight to "
+            f"`{GITHUB_REPO}` (branch `{GITHUB_BRANCH}`), so your data survives app reboots and redeploys "
+            f"without any manual steps."
+        )
+    else:
+        st.warning(
+            "GitHub sync is **off**. Anything saved right now only lives on this container's disk and "
+            "will be lost on the next reboot/redeploy. Add `GITHUB_REPO` and `GITHUB_TOKEN` "
+            "(and optionally `GITHUB_BRANCH`) to this app's Secrets in Streamlit Cloud to turn it on. "
+            "Until then, use the manual downloads below and upload them to your repo yourself."
+        )
+    st.caption("Manual backups (optional extra safety net even with GitHub sync on):")
+    col_dl1, col_dl2, col_dl3, col_dl4 = st.columns(4)
     with col_dl1:
         settings_json = json.dumps(_gi_to_json(st.session_state.gi), indent=2)
-        st.download_button(
-            "⬇️ brewery_settings.json",
-            data=settings_json,
-            file_name="brewery_settings.json",
-            mime="application/json",
-            use_container_width=True,
-        )
+        st.download_button("⬇️ Settings", data=settings_json, file_name="brewery_settings.json",
+                           mime="application/json", use_container_width=True)
     with col_dl2:
         beers_json = json.dumps(st.session_state.beers, indent=2)
-        st.download_button(
-            "⬇️ brewery_beers.json",
-            data=beers_json,
-            file_name="brewery_beers.json",
-            mime="application/json",
-            use_container_width=True,
-        )
+        st.download_button("⬇️ Beers", data=beers_json, file_name="brewery_beers.json",
+                           mime="application/json", use_container_width=True)
+    with col_dl3:
+        price_hist_json = json.dumps(load_history(), indent=2)
+        st.download_button("⬇️ Price History", data=price_hist_json, file_name="brewery_price_history.json",
+                           mime="application/json", use_container_width=True)
+    with col_dl4:
+        excise_hist_json = json.dumps(load_excise_history(), indent=2)
+        st.download_button("⬇️ Excise History", data=excise_hist_json, file_name="brewery_excise_history.json",
+                           mime="application/json", use_container_width=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1161,7 +1279,7 @@ elif page == "📜 Price History":
             st.rerun()
 
     if st.session_state.get("confirm_del_snap") == sel_idx:
-        st.warning(f"⚠️ You are about to delete snapshot **{snap['label']}**. Tick to confirm:")
+        st.warning(f"⚠️ You are about to delete snapshot **{history[sel_idx]['label']}**. Tick to confirm:")
         confirmed_snap = st.checkbox("Yes, delete this snapshot — this cannot be undone", key="chk_snap")
         if st.button("Cancel delete", key="cancel_snap"):
             st.session_state.pop("confirm_del_snap", None)
@@ -1479,8 +1597,11 @@ elif page == "🧾 Excise Return":
                 "beer_summary": brows,
                 "note": "Buckets and Taxable Ethanol (L) = (ABV% - 1.15%) x beer volume",
             })
-            save_excise_history(history)
-            st.success(f"✅ Saved excise return for {period_label}.")
+            result = save_excise_history(history)
+            if result is True:
+                st.success(f"✅ Saved excise return for {period_label}.")
+            else:
+                st.error(f"Save issue: {result}")
 
         # CSV download of detail rows
         detail_df = pd.DataFrame(matched_rows)[
