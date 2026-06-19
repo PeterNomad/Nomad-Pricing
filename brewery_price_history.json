@@ -1,0 +1,2169 @@
+[
+  {
+    "timestamp": "2026-06-19 08:24",
+    "label": "Snapshot 2026-06-19 08:24",
+    "excise_period": "4 Aug 2025",
+    "prices": [
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 8,
+        "cost": 4.356,
+        "margin_pct": 45.55
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 28,
+        "cost": 17.4241,
+        "margin_pct": 37.77
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 98,
+        "cost": 69.6965,
+        "margin_pct": 28.88
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 691,
+        "cost": 391.7866,
+        "margin_pct": 43.3
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 92,
+        "cost": 69.6965,
+        "margin_pct": 24.24
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 449,
+        "cost": 391.7866,
+        "margin_pct": 12.74
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 13,
+        "cost": 2.2332,
+        "margin_pct": 82.82
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 16,
+        "cost": 3.3302,
+        "margin_pct": 79.19
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 21,
+        "cost": 4.4507,
+        "margin_pct": 78.81
+      },
+      {
+        "beer": "Rainbow Cherry",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 41,
+        "cost": 8.9327,
+        "margin_pct": 78.21
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 7,
+        "cost": 3.7143,
+        "margin_pct": 46.94
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 24,
+        "cost": 14.8574,
+        "margin_pct": 38.09
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 126,
+        "cost": 89.1441,
+        "margin_pct": 29.25
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 650,
+        "cost": 368.6779,
+        "margin_pct": 43.28
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 118,
+        "cost": 89.1441,
+        "margin_pct": 24.45
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 423,
+        "cost": 368.6779,
+        "margin_pct": 12.84
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 12,
+        "cost": 2.1015,
+        "margin_pct": 82.49
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 15,
+        "cost": 3.1338,
+        "margin_pct": 79.11
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 20,
+        "cost": 4.1882,
+        "margin_pct": 79.06
+      },
+      {
+        "beer": "Rainbow Sherbet",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 39,
+        "cost": 8.4059,
+        "margin_pct": 78.45
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.2931,
+        "margin_pct": 34.14
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 19,
+        "cost": 13.1724,
+        "margin_pct": 30.67
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 67,
+        "cost": 52.6897,
+        "margin_pct": 21.36
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 511,
+        "cost": 322.0984,
+        "margin_pct": 36.97
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 63,
+        "cost": 52.6897,
+        "margin_pct": 16.37
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 332,
+        "cost": 322.0984,
+        "margin_pct": 2.98
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.836,
+        "margin_pct": 79.6
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.7378,
+        "margin_pct": 77.18
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 16,
+        "cost": 3.659,
+        "margin_pct": 77.13
+      },
+      {
+        "beer": "Queensie Lager",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 30,
+        "cost": 7.3438,
+        "margin_pct": 75.52
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.1796,
+        "margin_pct": 36.41
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.7184,
+        "margin_pct": 29.34
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 65,
+        "cost": 50.8736,
+        "margin_pct": 21.73
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 501,
+        "cost": 315.5908,
+        "margin_pct": 37.01
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 61,
+        "cost": 50.8736,
+        "margin_pct": 16.6
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 326,
+        "cost": 315.5908,
+        "margin_pct": 3.19
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.7989,
+        "margin_pct": 80.01
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.6825,
+        "margin_pct": 77.65
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 15,
+        "cost": 3.5851,
+        "margin_pct": 76.1
+      },
+      {
+        "beer": "Surf Mist Hazy",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 30,
+        "cost": 7.1955,
+        "margin_pct": 76.02
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.4082,
+        "margin_pct": 31.84
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 19,
+        "cost": 13.633,
+        "margin_pct": 28.25
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 69,
+        "cost": 54.5319,
+        "margin_pct": 20.97
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 530,
+        "cost": 333.6159,
+        "margin_pct": 37.05
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 65,
+        "cost": 54.5319,
+        "margin_pct": 16.1
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 344,
+        "cost": 333.6159,
+        "margin_pct": 3.02
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 10,
+        "cost": 1.9016,
+        "margin_pct": 80.98
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 13,
+        "cost": 2.8357,
+        "margin_pct": 78.19
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 16,
+        "cost": 3.7899,
+        "margin_pct": 76.31
+      },
+      {
+        "beer": "Hop Symphony Ale",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 31,
+        "cost": 7.6064,
+        "margin_pct": 75.46
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7468,
+        "margin_pct": 37.55
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 21,
+        "cost": 14.9871,
+        "margin_pct": 28.63
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 76,
+        "cost": 59.9483,
+        "margin_pct": 21.12
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 586,
+        "cost": 369.1679,
+        "margin_pct": 37.0
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 71,
+        "cost": 59.9483,
+        "margin_pct": 15.57
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 381,
+        "cost": 369.1679,
+        "margin_pct": 3.11
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.1043,
+        "margin_pct": 80.87
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1379,
+        "margin_pct": 77.59
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.1937,
+        "margin_pct": 76.7
+      },
+      {
+        "beer": "Monsoon IPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 35,
+        "cost": 8.417,
+        "margin_pct": 75.95
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7742,
+        "margin_pct": 37.1
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 22,
+        "cost": 15.0969,
+        "margin_pct": 31.38
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 77,
+        "cost": 60.3876,
+        "margin_pct": 21.57
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 593,
+        "cost": 373.7876,
+        "margin_pct": 36.97
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 72,
+        "cost": 60.3876,
+        "margin_pct": 16.13
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 386,
+        "cost": 373.7876,
+        "margin_pct": 3.16
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.1306,
+        "margin_pct": 80.63
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1772,
+        "margin_pct": 77.31
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.2462,
+        "margin_pct": 76.41
+      },
+      {
+        "beer": "Mountains Cold IPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 35,
+        "cost": 8.5224,
+        "margin_pct": 75.65
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.1904,
+        "margin_pct": 36.19
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.7617,
+        "margin_pct": 29.1
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 65,
+        "cost": 51.0468,
+        "margin_pct": 21.47
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 504,
+        "cost": 317.6748,
+        "margin_pct": 36.97
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 61,
+        "cost": 51.0468,
+        "margin_pct": 16.32
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 328,
+        "cost": 317.6748,
+        "margin_pct": 3.15
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.8107,
+        "margin_pct": 79.88
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.7002,
+        "margin_pct": 77.5
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 15,
+        "cost": 3.6088,
+        "margin_pct": 75.94
+      },
+      {
+        "beer": "Budgy Pale Ale",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 30,
+        "cost": 7.243,
+        "margin_pct": 75.86
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 4,
+        "cost": 2.7877,
+        "margin_pct": 30.31
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 16,
+        "cost": 11.1507,
+        "margin_pct": 30.31
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 57,
+        "cost": 44.6028,
+        "margin_pct": 21.75
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 413,
+        "cost": 259.9511,
+        "margin_pct": 37.06
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 53,
+        "cost": 44.6028,
+        "margin_pct": 15.84
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 268,
+        "cost": 259.9511,
+        "margin_pct": 3.0
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 8,
+        "cost": 1.4817,
+        "margin_pct": 81.48
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 10,
+        "cost": 2.2096,
+        "margin_pct": 77.9
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 13,
+        "cost": 2.953,
+        "margin_pct": 77.28
+      },
+      {
+        "beer": "Coastal Mid Strength",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 24,
+        "cost": 5.9269,
+        "margin_pct": 75.3
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7292,
+        "margin_pct": 37.85
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 21,
+        "cost": 14.9168,
+        "margin_pct": 28.97
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 76,
+        "cost": 59.6673,
+        "margin_pct": 21.49
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 581,
+        "cost": 365.8674,
+        "margin_pct": 37.03
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 71,
+        "cost": 59.6673,
+        "margin_pct": 15.96
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 377,
+        "cost": 365.8674,
+        "margin_pct": 2.95
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.0854,
+        "margin_pct": 81.04
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1099,
+        "margin_pct": 77.79
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.1563,
+        "margin_pct": 76.91
+      },
+      {
+        "beer": "Baroness Red IPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 34,
+        "cost": 8.3418,
+        "margin_pct": 75.47
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 8,
+        "cost": 4.6293,
+        "margin_pct": 42.13
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 29,
+        "cost": 18.5172,
+        "margin_pct": 36.15
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 105,
+        "cost": 74.0689,
+        "margin_pct": 29.46
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 746,
+        "cost": 422.8403,
+        "margin_pct": 43.32
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 98,
+        "cost": 74.0689,
+        "margin_pct": 24.42
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 485,
+        "cost": 422.8403,
+        "margin_pct": 12.82
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 14,
+        "cost": 2.4102,
+        "margin_pct": 82.78
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 18,
+        "cost": 3.5941,
+        "margin_pct": 80.03
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 23,
+        "cost": 4.8035,
+        "margin_pct": 79.12
+      },
+      {
+        "beer": "Gweilo Raspberry Waffle",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 44,
+        "cost": 9.6408,
+        "margin_pct": 78.09
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7968,
+        "margin_pct": 36.72
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 22,
+        "cost": 15.1871,
+        "margin_pct": 30.97
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 77,
+        "cost": 60.7485,
+        "margin_pct": 21.11
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 592,
+        "cost": 372.9606,
+        "margin_pct": 37.0
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 72,
+        "cost": 60.7485,
+        "margin_pct": 15.63
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 385,
+        "cost": 372.9606,
+        "margin_pct": 3.13
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.1259,
+        "margin_pct": 80.67
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1702,
+        "margin_pct": 77.36
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.2368,
+        "margin_pct": 76.46
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 35,
+        "cost": 8.5035,
+        "margin_pct": 75.7
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.0919,
+        "margin_pct": 38.16
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.3677,
+        "margin_pct": 31.29
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 63,
+        "cost": 49.4708,
+        "margin_pct": 21.47
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 481,
+        "cost": 302.9422,
+        "margin_pct": 37.02
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 59,
+        "cost": 49.4708,
+        "margin_pct": 16.15
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 313,
+        "cost": 302.9422,
+        "margin_pct": 3.21
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.7268,
+        "margin_pct": 80.81
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 11,
+        "cost": 2.575,
+        "margin_pct": 76.59
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 15,
+        "cost": 3.4414,
+        "margin_pct": 77.06
+      },
+      {
+        "beer": "Wanderlust Dark Lager",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 29,
+        "cost": 6.9071,
+        "margin_pct": 76.18
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.2031,
+        "margin_pct": 35.94
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.8122,
+        "margin_pct": 28.82
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 65,
+        "cost": 51.249,
+        "margin_pct": 21.16
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 504,
+        "cost": 317.7603,
+        "margin_pct": 36.95
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 61,
+        "cost": 51.249,
+        "margin_pct": 15.99
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 328,
+        "cost": 317.7603,
+        "margin_pct": 3.12
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.8112,
+        "margin_pct": 79.88
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.701,
+        "margin_pct": 77.49
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 15,
+        "cost": 3.6098,
+        "margin_pct": 75.93
+      },
+      {
+        "beer": "The Dark Side Stout",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 30,
+        "cost": 7.2449,
+        "margin_pct": 75.85
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.2816,
+        "margin_pct": 34.37
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 19,
+        "cost": 13.1266,
+        "margin_pct": 30.91
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 67,
+        "cost": 52.5062,
+        "margin_pct": 21.63
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 521,
+        "cost": 328.2376,
+        "margin_pct": 37.0
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 63,
+        "cost": 52.5062,
+        "margin_pct": 16.66
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 339,
+        "cost": 328.2376,
+        "margin_pct": 3.17
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 10,
+        "cost": 1.871,
+        "margin_pct": 81.29
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.79,
+        "margin_pct": 76.75
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 16,
+        "cost": 3.7288,
+        "margin_pct": 76.7
+      },
+      {
+        "beer": "Espresso Stout",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 31,
+        "cost": 7.4838,
+        "margin_pct": 75.86
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.2359,
+        "margin_pct": 35.28
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.9435,
+        "margin_pct": 28.09
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 66,
+        "cost": 51.774,
+        "margin_pct": 21.55
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 508,
+        "cost": 320.2187,
+        "margin_pct": 36.96
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 62,
+        "cost": 51.774,
+        "margin_pct": 16.49
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 330,
+        "cost": 320.2187,
+        "margin_pct": 2.96
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.8252,
+        "margin_pct": 79.72
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.7219,
+        "margin_pct": 77.32
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 16,
+        "cost": 3.6377,
+        "margin_pct": 77.26
+      },
+      {
+        "beer": "Saint Benedict Czech Pils",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 30,
+        "cost": 7.301,
+        "margin_pct": 75.66
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 2.8506,
+        "margin_pct": 42.99
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 16,
+        "cost": 11.4022,
+        "margin_pct": 28.74
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 58,
+        "cost": 45.6089,
+        "margin_pct": 21.36
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 426,
+        "cost": 268.3357,
+        "margin_pct": 37.01
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 54,
+        "cost": 45.6089,
+        "margin_pct": 15.54
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 277,
+        "cost": 268.3357,
+        "margin_pct": 3.13
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 8,
+        "cost": 1.5295,
+        "margin_pct": 80.88
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 10,
+        "cost": 2.2809,
+        "margin_pct": 77.19
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 13,
+        "cost": 3.0483,
+        "margin_pct": 76.55
+      },
+      {
+        "beer": "Sorrento Sunshine Lemon Sour Ale",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 25,
+        "cost": 6.1181,
+        "margin_pct": 75.53
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 8,
+        "cost": 4.6292,
+        "margin_pct": 42.13
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 29,
+        "cost": 18.5169,
+        "margin_pct": 36.15
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 105,
+        "cost": 74.0677,
+        "margin_pct": 29.46
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 746,
+        "cost": 422.8321,
+        "margin_pct": 43.32
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 98,
+        "cost": 74.0677,
+        "margin_pct": 24.42
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 485,
+        "cost": 422.8321,
+        "margin_pct": 12.82
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 14,
+        "cost": 2.4101,
+        "margin_pct": 82.78
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 18,
+        "cost": 3.5941,
+        "margin_pct": 80.03
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 23,
+        "cost": 4.8034,
+        "margin_pct": 79.12
+      },
+      {
+        "beer": "Gweilo Rasberry Waffle",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 44,
+        "cost": 9.6406,
+        "margin_pct": 78.09
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 4,
+        "cost": 2.7244,
+        "margin_pct": 31.89
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 16,
+        "cost": 10.8974,
+        "margin_pct": 31.89
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 83,
+        "cost": 65.3846,
+        "margin_pct": 21.22
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 414,
+        "cost": 260.7757,
+        "margin_pct": 37.01
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 78,
+        "cost": 65.3846,
+        "margin_pct": 16.17
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 269,
+        "cost": 260.7757,
+        "margin_pct": 3.06
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 8,
+        "cost": 1.4864,
+        "margin_pct": 81.42
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 10,
+        "cost": 2.2166,
+        "margin_pct": 77.83
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 13,
+        "cost": 2.9624,
+        "margin_pct": 77.21
+      },
+      {
+        "beer": "Dungog Mid Strength",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 25,
+        "cost": 5.9457,
+        "margin_pct": 76.22
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.0812,
+        "margin_pct": 38.38
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 18,
+        "cost": 12.325,
+        "margin_pct": 31.53
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 63,
+        "cost": 49.2999,
+        "margin_pct": 21.75
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 474,
+        "cost": 298.643,
+        "margin_pct": 37.0
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 59,
+        "cost": 49.2999,
+        "margin_pct": 16.44
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 308,
+        "cost": 298.643,
+        "margin_pct": 3.04
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 9,
+        "cost": 1.7023,
+        "margin_pct": 81.09
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 11,
+        "cost": 2.5385,
+        "margin_pct": 76.92
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 15,
+        "cost": 3.3926,
+        "margin_pct": 77.38
+      },
+      {
+        "beer": "Brookie Draught",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 28,
+        "cost": 6.8091,
+        "margin_pct": 75.68
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 7,
+        "cost": 4.0483,
+        "margin_pct": 42.17
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 26,
+        "cost": 16.1932,
+        "margin_pct": 37.72
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 91,
+        "cost": 64.7728,
+        "margin_pct": 28.82
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 660,
+        "cost": 374.0699,
+        "margin_pct": 43.32
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 86,
+        "cost": 64.7728,
+        "margin_pct": 24.68
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 429,
+        "cost": 374.0699,
+        "margin_pct": 12.8
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 12,
+        "cost": 2.1322,
+        "margin_pct": 82.23
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 16,
+        "cost": 3.1796,
+        "margin_pct": 80.13
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 20,
+        "cost": 4.2494,
+        "margin_pct": 78.75
+      },
+      {
+        "beer": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 39,
+        "cost": 8.5288,
+        "margin_pct": 78.13
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 7,
+        "cost": 4.105,
+        "margin_pct": 41.36
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 26,
+        "cost": 16.4201,
+        "margin_pct": 36.85
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 93,
+        "cost": 65.6805,
+        "margin_pct": 29.38
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 659,
+        "cost": 373.8072,
+        "margin_pct": 43.28
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 87,
+        "cost": 65.6805,
+        "margin_pct": 24.51
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 429,
+        "cost": 373.8072,
+        "margin_pct": 12.87
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 12,
+        "cost": 2.1307,
+        "margin_pct": 82.24
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 16,
+        "cost": 3.1774,
+        "margin_pct": 80.14
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 20,
+        "cost": 4.2465,
+        "margin_pct": 78.77
+      },
+      {
+        "beer": "Gweilo Caramel Berry Pie",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 39,
+        "cost": 8.5228,
+        "margin_pct": 78.15
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 7,
+        "cost": 4.0546,
+        "margin_pct": 42.08
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 26,
+        "cost": 16.2182,
+        "margin_pct": 37.62
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 92,
+        "cost": 64.873,
+        "margin_pct": 29.49
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 639,
+        "cost": 362.3207,
+        "margin_pct": 43.3
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 86,
+        "cost": 64.873,
+        "margin_pct": 24.57
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 415,
+        "cost": 362.3207,
+        "margin_pct": 12.69
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 12,
+        "cost": 2.0652,
+        "margin_pct": 82.79
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 15,
+        "cost": 3.0797,
+        "margin_pct": 79.47
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 20,
+        "cost": 4.116,
+        "margin_pct": 79.42
+      },
+      {
+        "beer": "Gweilo Rocky Road Stout",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 38,
+        "cost": 8.2609,
+        "margin_pct": 78.26
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.364,
+        "margin_pct": 32.72
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 19,
+        "cost": 13.456,
+        "margin_pct": 29.18
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 68,
+        "cost": 53.8242,
+        "margin_pct": 20.85
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 456,
+        "cost": 287.4602,
+        "margin_pct": 36.96
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 64,
+        "cost": 53.8242,
+        "margin_pct": 15.9
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 297,
+        "cost": 287.4602,
+        "margin_pct": 3.21
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 8,
+        "cost": 1.6385,
+        "margin_pct": 79.52
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 11,
+        "cost": 2.4434,
+        "margin_pct": 77.79
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 14,
+        "cost": 3.2655,
+        "margin_pct": 76.67
+      },
+      {
+        "beer": "Nutcracker Stout",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 27,
+        "cost": 6.5541,
+        "margin_pct": 75.73
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 5,
+        "cost": 3.2828,
+        "margin_pct": 34.34
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 19,
+        "cost": 13.1312,
+        "margin_pct": 30.89
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 67,
+        "cost": 52.5247,
+        "margin_pct": 21.6
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 515,
+        "cost": 324.5577,
+        "margin_pct": 36.98
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 63,
+        "cost": 52.5247,
+        "margin_pct": 16.63
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 335,
+        "cost": 324.5577,
+        "margin_pct": 3.12
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 10,
+        "cost": 1.85,
+        "margin_pct": 81.5
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 12,
+        "cost": 2.7587,
+        "margin_pct": 77.01
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 16,
+        "cost": 3.687,
+        "margin_pct": 76.96
+      },
+      {
+        "beer": "Good Shephard Pilsner",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 31,
+        "cost": 7.3999,
+        "margin_pct": 76.13
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7538,
+        "margin_pct": 37.44
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 21,
+        "cost": 15.0151,
+        "margin_pct": 28.5
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 76,
+        "cost": 60.0606,
+        "margin_pct": 20.97
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 594,
+        "cost": 373.9376,
+        "margin_pct": 37.05
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 72,
+        "cost": 60.0606,
+        "margin_pct": 16.58
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 386,
+        "cost": 373.9376,
+        "margin_pct": 3.12
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.1314,
+        "margin_pct": 80.62
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1785,
+        "margin_pct": 77.3
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.2479,
+        "margin_pct": 76.4
+      },
+      {
+        "beer": "Salem NEIPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 35,
+        "cost": 8.5258,
+        "margin_pct": 75.64
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Can",
+        "sell_price": 6,
+        "cost": 3.7967,
+        "margin_pct": 36.72
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "4-Pack",
+        "sell_price": 22,
+        "cost": 15.1869,
+        "margin_pct": 30.97
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Case",
+        "sell_price": 77,
+        "cost": 60.7475,
+        "margin_pct": 21.11
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Retail + Online",
+        "package": "Keg",
+        "sell_price": 592,
+        "cost": 372.9524,
+        "margin_pct": 37.0
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Wholesale",
+        "package": "Case",
+        "sell_price": 72,
+        "cost": 60.7475,
+        "margin_pct": 15.63
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Wholesale",
+        "package": "Keg",
+        "sell_price": 385,
+        "cost": 372.9524,
+        "margin_pct": 3.13
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Middy",
+        "sell_price": 11,
+        "cost": 2.1258,
+        "margin_pct": 80.67
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Schooner",
+        "sell_price": 14,
+        "cost": 3.1701,
+        "margin_pct": 77.36
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Pint",
+        "sell_price": 18,
+        "cost": 4.2367,
+        "margin_pct": 76.46
+      },
+      {
+        "beer": "Pier 39 WC IPA",
+        "channel": "Tap Room",
+        "package": "Jug",
+        "sell_price": 35,
+        "cost": 8.5033,
+        "margin_pct": 75.7
+      }
+    ]
+  }
+]
