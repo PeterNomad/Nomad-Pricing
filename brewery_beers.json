@@ -268,5 +268,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.0,
     "active": true
+  },
+  {
+    "name": "Dungog Mid Strength",
+    "abv": 0.033,
+    "batch_size_l": 2500,
+    "can_size_l": 0.375,
+    "proportion_cans": 0.5,
+    "proportion_kegs": 0.5,
+    "cans_per_case": 24,
+    "keg_size_l": 50,
+    "pak_tech": false,
+    "raw_materials": 1083.0,
+    "base_margin": 0.37,
+    "royalty_pct": 0.0,
+    "active": true
   }
 ]
