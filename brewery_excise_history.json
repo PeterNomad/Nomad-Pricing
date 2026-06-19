@@ -1,0 +1,250 @@
+[
+  {
+    "period_key": "2026-05",
+    "period_label": "May 2026",
+    "saved_at": "2026-06-19 07:54",
+    "buckets": {
+      "can|lte35": 0.0,
+      "can|gt35": 46.91550000000001,
+      "keg|lte35": 0.0,
+      "keg|gt35": 15.935000000000002
+    },
+    "rows": [
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Beachcomber Case - Beachcomber Pale Ale Case",
+        "serve": "Case",
+        "beer_name": "Budgy Pale Ale",
+        "match_score": 0.59,
+        "package_type": "can",
+        "qty": 15,
+        "litres_each": 6.0,
+        "total_litres": 90.0,
+        "abv": 0.05
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Gweilo Rainbow Sherbet - Gweilo Rainbow Sherbet",
+        "serve": "Case",
+        "beer_name": "Rainbow Sherbet",
+        "match_score": 0.81,
+        "package_type": "can",
+        "qty": 83,
+        "litres_each": 9.0,
+        "total_litres": 747.0,
+        "abv": 0.06
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Gweilo Rainbow Sherbet Keg - Gweilo Rainbow Sherbet Keg",
+        "serve": "Keg 50L",
+        "beer_name": "Rainbow Sherbet",
+        "match_score": 0.81,
+        "package_type": "keg",
+        "qty": 3,
+        "litres_each": 50.0,
+        "total_litres": 150.0,
+        "abv": 0.06
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "HSA - Hop Symphony Ale",
+        "serve": "Case",
+        "beer_name": "Hop Symphony Ale",
+        "match_score": 1.0,
+        "package_type": "can",
+        "qty": 3,
+        "litres_each": 6.0,
+        "total_litres": 18.0,
+        "abv": 0.054
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "MIPA - Monsoon IPA",
+        "serve": "Case",
+        "beer_name": "Monsoon IPA",
+        "match_score": 1.0,
+        "package_type": "can",
+        "qty": 8,
+        "litres_each": 6.0,
+        "total_litres": 48.0,
+        "abv": 0.064
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Monsoon 20L Keg - Monsoon IPA 20L Keg",
+        "serve": "Keg 20L",
+        "beer_name": "Monsoon IPA",
+        "match_score": 0.62,
+        "package_type": "keg",
+        "qty": 1,
+        "litres_each": 20.0,
+        "total_litres": 20.0,
+        "abv": 0.064
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Pier 39 20L Keg - Pier 39 West Coast IPA 20L Keg",
+        "serve": "Keg 20L",
+        "beer_name": "Pier 39 WC IPA",
+        "match_score": 0.7,
+        "package_type": "keg",
+        "qty": 2,
+        "litres_each": 20.0,
+        "total_litres": 40.0,
+        "abv": 0.067
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Pier 39 Case - Pier 39 West Coast IPA Case",
+        "serve": "Case",
+        "beer_name": "Pier 39 WC IPA",
+        "match_score": 0.78,
+        "package_type": "can",
+        "qty": 5,
+        "litres_each": 6.0,
+        "total_litres": 30.0,
+        "abv": 0.067
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "QLC - Queensie Lager",
+        "serve": "Case",
+        "beer_name": "Queensie Lager",
+        "match_score": 1.0,
+        "package_type": "can",
+        "qty": 6,
+        "litres_each": 6.0,
+        "total_litres": 36.0,
+        "abv": 0.05
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Queensie Lager 30L - Queensie Lager 30L Keg",
+        "serve": "Keg 30L",
+        "beer_name": "Queensie Lager",
+        "match_score": 0.88,
+        "package_type": "keg",
+        "qty": 3,
+        "litres_each": 30.0,
+        "total_litres": 90.0,
+        "abv": 0.05
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Queensie Lager 50L - Queensie Lager 50L Keg",
+        "serve": "Keg 50L",
+        "beer_name": "Queensie Lager",
+        "match_score": 0.88,
+        "package_type": "keg",
+        "qty": 1,
+        "litres_each": 50.0,
+        "total_litres": 50.0,
+        "abv": 0.05
+      },
+      {
+        "source": "Wholesale (Xero)",
+        "source_name": "Surf Mist Hazy XPA Case - Surf Mist Hazy XPA Case",
+        "serve": "Case",
+        "beer_name": "Surf Mist Hazy",
+        "match_score": 0.76,
+        "package_type": "can",
+        "qty": 5,
+        "litres_each": 6.0,
+        "total_litres": 30.0,
+        "abv": 0.041
+      }
+    ],
+    "beer_summary": [
+      {
+        "Beer": "Budgy Pale Ale",
+        "Package": "Can",
+        "ABV": "5.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 90.0,
+        "Taxable Ethanol (L)": 3.465
+      },
+      {
+        "Beer": "Hop Symphony Ale",
+        "Package": "Can",
+        "ABV": "5.4%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 18.0,
+        "Taxable Ethanol (L)": 0.765
+      },
+      {
+        "Beer": "Monsoon IPA",
+        "Package": "Can",
+        "ABV": "6.4%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 48.0,
+        "Taxable Ethanol (L)": 2.52
+      },
+      {
+        "Beer": "Monsoon IPA",
+        "Package": "Keg",
+        "ABV": "6.4%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 20.0,
+        "Taxable Ethanol (L)": 1.05
+      },
+      {
+        "Beer": "Pier 39 WC IPA",
+        "Package": "Can",
+        "ABV": "6.7%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 30.0,
+        "Taxable Ethanol (L)": 1.665
+      },
+      {
+        "Beer": "Pier 39 WC IPA",
+        "Package": "Keg",
+        "ABV": "6.7%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 40.0,
+        "Taxable Ethanol (L)": 2.22
+      },
+      {
+        "Beer": "Queensie Lager",
+        "Package": "Can",
+        "ABV": "5.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 36.0,
+        "Taxable Ethanol (L)": 1.386
+      },
+      {
+        "Beer": "Queensie Lager",
+        "Package": "Keg",
+        "ABV": "5.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 140.0,
+        "Taxable Ethanol (L)": 5.39
+      },
+      {
+        "Beer": "Rainbow Sherbet",
+        "Package": "Can",
+        "ABV": "6.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 747.0,
+        "Taxable Ethanol (L)": 36.23
+      },
+      {
+        "Beer": "Rainbow Sherbet",
+        "Package": "Keg",
+        "ABV": "6.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 150.0,
+        "Taxable Ethanol (L)": 7.275
+      },
+      {
+        "Beer": "Surf Mist Hazy",
+        "Package": "Can",
+        "ABV": "4.1%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 30.0,
+        "Taxable Ethanol (L)": 0.885
+      }
+    ],
+    "note": "Buckets and Taxable Ethanol (L) = (ABV% - 1.15%) x beer volume"
+  }
+]
