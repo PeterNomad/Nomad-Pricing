@@ -258,7 +258,7 @@
     "name": "Gweilo Rasberry Waffle",
     "abv": 0.06,
     "batch_size_l": 2250,
-    "can_size_l": 0.375,
+    "can_size_l": 0.44,
     "proportion_cans": 0.5,
     "proportion_kegs": 0.5,
     "cans_per_case": 16,
