@@ -298,5 +298,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.0,
     "active": true
+  },
+  {
+    "name": "Gweilo Maple Blackberry Cr\u00e8me Brulee",
+    "abv": 0.042,
+    "batch_size_l": 2250,
+    "can_size_l": 0.44,
+    "proportion_cans": 0.5,
+    "proportion_kegs": 0.5,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": false,
+    "raw_materials": 4697.0,
+    "base_margin": 0.37,
+    "royalty_pct": 0.0,
+    "active": true
   }
 ]
