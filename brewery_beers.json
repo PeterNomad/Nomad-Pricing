@@ -358,5 +358,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.0,
     "active": true
+  },
+  {
+    "name": "Good Shephard Pilsner",
+    "abv": 0.046,
+    "batch_size_l": 2400,
+    "can_size_l": 0.375,
+    "proportion_cans": 0.5,
+    "proportion_kegs": 0.5,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": true,
+    "raw_materials": 2217.0,
+    "base_margin": 0.37,
+    "royalty_pct": 0.0,
+    "active": true
   }
 ]
