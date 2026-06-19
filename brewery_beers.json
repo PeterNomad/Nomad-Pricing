@@ -266,7 +266,7 @@
     "pak_tech": false,
     "raw_materials": 5134.0,
     "base_margin": 0.37,
-    "royalty_pct": 0.001,
+    "royalty_pct": 0.1,
     "active": true
   },
   {
