@@ -458,7 +458,7 @@
     "proportion_kegs": 0.25,
     "cans_per_case": 16,
     "keg_size_l": 50,
-    "pak_tech": true,
+    "pak_tech": false,
     "raw_materials": 2284.55,
     "base_margin": 0.37,
     "royalty_pct": 0.1,
