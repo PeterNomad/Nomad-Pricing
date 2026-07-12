@@ -1,0 +1,19 @@
+[
+  {
+    "batch_id": "The Dark Side Stout__0011A",
+    "beer_name": "The Dark Side Stout",
+    "batch_number": "0011A",
+    "actual_abv": 0.042,
+    "brew_date": "2026-10-01",
+    "use_by_date": "2027-10-01",
+    "can_size_l": 0.375,
+    "cans_produced": 114,
+    "notes": "",
+    "archived": false,
+    "kegs_10l": 0,
+    "kegs_19_5l": 0,
+    "kegs_20l": 0,
+    "kegs_30l": 32,
+    "kegs_50l": 0
+  }
+]
