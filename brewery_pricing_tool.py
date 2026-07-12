@@ -448,7 +448,7 @@ st.sidebar.title("🍺 Brewery Pricing Tool")
 page = st.sidebar.radio("Navigate", [
     "📊 Price Lookup", "📋 Price Lists", "⚙️ General Inputs",
     "🍺 Beer Inputs", "🔍 What-If Analysis", "📜 Price History",
-    "🧾 Excise Return",
+    "🧾 Excise Return", "📦 Batches & Stocktake", "📈 Stock Forecast",
 ], label_visibility="collapsed")
 
 # Sidebar: show active excise period
@@ -686,6 +686,238 @@ def compute_excise_summary(rows):
         buck = "lte35" if abv <= 0.035 else "gt35"
         buckets[(pkg, buck)] += taxable_ethanol(r["total_litres"], abv)
     return buckets
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INVENTORY — PERSISTENCE (batches & stocktakes)
+# Follows the same local-file + GitHub-sync pattern as the other data files.
+# ─────────────────────────────────────────────────────────────────────────────
+
+BATCHES_FILE    = os.path.join(BASE_DIR, "brewery_batches.json")
+STOCKTAKES_FILE = os.path.join(BASE_DIR, "brewery_stocktakes.json")
+
+KEG_SIZES = [10, 19.5, 20, 30, 50]  # standard keg sizes in litres
+
+def _keg_field(size_l):
+    """Field name for a keg size, e.g. 10 -> 'kegs_10l', 19.5 -> 'kegs_19_5l'."""
+    s = str(size_l).replace(".", "_")
+    return f"kegs_{s}l"
+
+def load_batches():
+    if GITHUB_ENABLED:
+        raw, _ = github_get_file_cached("brewery_batches.json")
+        if raw:
+            try: return json.loads(raw)
+            except Exception: pass
+    if os.path.exists(BATCHES_FILE):
+        try:
+            with open(BATCHES_FILE) as f: return json.load(f)
+        except Exception: pass
+    return []
+
+def save_batches(batches):
+    content = json.dumps(batches, indent=2)
+    try:
+        with open(BATCHES_FILE, "w") as f: f.write(content)
+    except Exception as e:
+        return str(e)
+    if GITHUB_ENABLED:
+        if not github_put_file("brewery_batches.json", content, "Update brewery_batches.json via app"):
+            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+    return True
+
+def load_stocktakes():
+    if GITHUB_ENABLED:
+        raw, _ = github_get_file_cached("brewery_stocktakes.json")
+        if raw:
+            try: return json.loads(raw)
+            except Exception: pass
+    if os.path.exists(STOCKTAKES_FILE):
+        try:
+            with open(STOCKTAKES_FILE) as f: return json.load(f)
+        except Exception: pass
+    return []
+
+def save_stocktakes(stocktakes):
+    content = json.dumps(stocktakes, indent=2)
+    try:
+        with open(STOCKTAKES_FILE, "w") as f: f.write(content)
+    except Exception as e:
+        return str(e)
+    if GITHUB_ENABLED:
+        if not github_put_file("brewery_stocktakes.json", content, "Update brewery_stocktakes.json via app"):
+            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+    return True
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INVENTORY — CORE CALCULATION HELPERS
+#
+# Design (agreed with Peter):
+#   • SOH is depleted FIFO — the oldest active batch of a beer is drawn down
+#     first, using monthly beer sales volumes from the Excise Return history.
+#   • Cans and kegs are tracked as separate litre pools per batch (excise data
+#     distinguishes can vs keg sales), so a can-heavy sales month depletes can
+#     stock first without touching keg stock, and vice versa.
+#   • A stocktake is a ground-truth correction: it overwrites a batch's SOH
+#     (cans + kegs-by-size) as at the stocktake date. Only excise sales dated
+#     after the most recent stocktake for a batch are deducted on top of it.
+#   • The keg-size breakdown (10L/19.5L/20L/30L/50L) is only precise at
+#     production and immediately after a stocktake. Between stocktakes, keg
+#     depletion is applied to the aggregate keg litre pool (excise data
+#     doesn't tell us which keg size was poured), so the per-size split shown
+#     for a batch mid-cycle is an estimate. This is normal — stocktakes are
+#     there to periodically true it back up.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def batch_produced_can_litres(batch):
+    return batch.get("cans_produced", 0) * batch.get("can_size_l", 0.375)
+
+def batch_produced_keg_litres(batch):
+    return sum(batch.get(_keg_field(s), 0) * s for s in KEG_SIZES)
+
+def batch_total_litres(batch):
+    return batch_produced_can_litres(batch) + batch_produced_keg_litres(batch)
+
+def get_excise_monthly_sales_by_package(beer_name):
+    """
+    Return {period_key: {"can": litres, "keg": litres}} for a beer, built from
+    saved Excise Return history (which is itself sourced from Square/Xero/manual
+    entries — i.e. actual historical sales volumes).
+    """
+    history = load_excise_history()
+    sales = {}
+    for h in history:
+        pk = h.get("period_key", "")
+        can_l = sum(r.get("total_litres", 0) for r in h.get("rows", [])
+                    if r.get("beer_name") == beer_name and r.get("package_type") == "can")
+        keg_l = sum(r.get("total_litres", 0) for r in h.get("rows", [])
+                    if r.get("beer_name") == beer_name and r.get("package_type") == "keg")
+        if can_l > 0 or keg_l > 0:
+            entry = sales.setdefault(pk, {"can": 0.0, "keg": 0.0})
+            entry["can"] += can_l
+            entry["keg"] += keg_l
+    return sales
+
+def compute_soh_for_beer(beer_name, batches, stocktakes):
+    """
+    Compute current SOH per active batch of a beer using FIFO depletion.
+    Returns a list of batch-state dicts (oldest batch first), each with:
+      batch_id, batch_number, brew_date, use_by_date, can_size_l,
+      soh_can_litres, soh_keg_litres, soh_cans_est, soh_kegs_by_size (dict, estimate),
+      last_stocktake_date
+    """
+    beer_batches = sorted(
+        [b for b in batches if b.get("beer_name") == beer_name and not b.get("archived", False)],
+        key=lambda b: (b.get("brew_date", ""), b.get("batch_number", ""))
+    )
+    if not beer_batches:
+        return []
+
+    beer_stocktakes = [s for s in stocktakes if s.get("beer_name") == beer_name]
+
+    states = []
+    for b in beer_batches:
+        state = {
+            "batch_id":     b["batch_id"],
+            "batch_number": b.get("batch_number", ""),
+            "brew_date":    b.get("brew_date", ""),
+            "use_by_date":  b.get("use_by_date", ""),
+            "can_size_l":   b.get("can_size_l", 0.375),
+            "soh_can_litres": batch_produced_can_litres(b),
+            "soh_keg_litres": batch_produced_keg_litres(b),
+            "soh_kegs_by_size": {s: b.get(_keg_field(s), 0) for s in KEG_SIZES},
+            "last_stocktake_date": None,
+            "baseline_date": b.get("brew_date", ""),  # sales after this date get deducted
+        }
+        states.append(state)
+
+    # Apply most recent stocktake per batch as a new baseline
+    for state in states:
+        matching = [s for s in beer_stocktakes if s.get("batch_id") == state["batch_id"]]
+        if matching:
+            latest = sorted(matching, key=lambda s: s.get("stocktake_date", ""))[-1]
+            state["soh_can_litres"] = latest.get("soh_cans", 0) * state["can_size_l"]
+            state["soh_kegs_by_size"] = {s: latest.get(_keg_field(s), 0) for s in KEG_SIZES}
+            state["soh_keg_litres"] = sum(state["soh_kegs_by_size"][s] * s for s in KEG_SIZES)
+            state["last_stocktake_date"] = latest.get("stocktake_date", "")
+            state["baseline_date"] = latest.get("stocktake_date", "")
+
+    # FIFO-deduct excise sales that occurred after each batch's baseline date,
+    # walking oldest batch first, separately for cans and kegs.
+    monthly_sales = get_excise_monthly_sales_by_package(beer_name)
+    for period_key in sorted(monthly_sales.keys()):
+        # Only apply a period's sales once per beer, to the batch pool as a whole —
+        # skip periods that are clearly before every batch existed.
+        can_to_deduct = monthly_sales[period_key]["can"]
+        keg_to_deduct = monthly_sales[period_key]["keg"]
+        period_end = period_key + "-28"  # rough month-end for comparison
+
+        for state in states:
+            if can_to_deduct <= 0:
+                break
+            if period_end <= state["baseline_date"]:
+                continue
+            take = min(state["soh_can_litres"], can_to_deduct)
+            state["soh_can_litres"] -= take
+            can_to_deduct -= take
+
+        for state in states:
+            if keg_to_deduct <= 0:
+                break
+            if period_end <= state["baseline_date"]:
+                continue
+            take = min(state["soh_keg_litres"], keg_to_deduct)
+            state["soh_keg_litres"] -= take
+            keg_to_deduct -= take
+
+    for state in states:
+        state["soh_can_litres"] = max(0.0, round(state["soh_can_litres"], 3))
+        state["soh_keg_litres"] = max(0.0, round(state["soh_keg_litres"], 3))
+        state["soh_cans_est"]   = round(state["soh_can_litres"] / state["can_size_l"], 1) if state["can_size_l"] else 0
+        state["soh_total_litres"] = round(state["soh_can_litres"] + state["soh_keg_litres"], 3)
+
+    return states
+
+def weighted_avg_monthly_sales(beer_name, window_months=3, weighted=True):
+    """
+    Average monthly total litres sold (can + keg combined) for a beer over the
+    most recent `window_months` excise periods. If weighted, more recent
+    months are weighted more heavily (linear weights 1..window_months).
+    Returns 0 if there's no sales history.
+    """
+    monthly = get_excise_monthly_sales_by_package(beer_name)
+    if not monthly:
+        return 0.0
+    periods = sorted(monthly.keys())[-window_months:]
+    if not periods:
+        return 0.0
+    totals = [monthly[p]["can"] + monthly[p]["keg"] for p in periods]
+    if weighted:
+        weights = list(range(1, len(totals) + 1))  # oldest=1 ... newest=n
+        return sum(t * w for t, w in zip(totals, weights)) / sum(weights)
+    return sum(totals) / len(totals)
+
+def months_to_earliest_use_by(beer_name, batches, today=None):
+    """Months from today to the earliest use-by date among active, non-empty batches."""
+    today = today or datetime.today().date()
+    dates = []
+    for b in batches:
+        if b.get("beer_name") != beer_name or b.get("archived", False):
+            continue
+        ubd = b.get("use_by_date", "")
+        if not ubd:
+            continue
+        try:
+            d = datetime.strptime(ubd, "%Y-%m-%d").date()
+            dates.append(d)
+        except Exception:
+            continue
+    if not dates:
+        return None, None
+    earliest = min(dates)
+    months = (earliest - today).days / 30.44
+    return round(months, 1), earliest
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1652,3 +1884,282 @@ elif page == "🧾 Excise Return":
                 mime="text/csv",
                 key=f"hist_dl_{sel_hist}",
             )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PAGE: BATCHES & STOCKTAKE
+# ─────────────────────────────────────────────────────────────────────────────
+elif page == "📦 Batches & Stocktake":
+    st.title("📦 Batches & Stocktake")
+    st.caption("Record each completed brew, and periodically true up stock levels with a physical count.")
+
+    all_beer_names = sorted(set(b["name"] for b in st.session_state.beers))
+    beer_can_size  = {b["name"]: b.get("can_size_l", 0.375) for b in st.session_state.beers}
+
+    batches    = load_batches()
+    stocktakes = load_stocktakes()
+
+    # ── 1. Record a completed batch ──────────────────────────────────────────
+    with st.expander("➕ Record a Completed Batch", expanded=not batches):
+        with st.form("add_batch_form"):
+            c1, c2, c3 = st.columns(3)
+            b_beer   = c1.selectbox("Beer", all_beer_names or ["No beers configured"])
+            b_number = c2.text_input("Batch Number", placeholder="e.g. B-2026-014")
+            b_abv    = c3.number_input("Actual ABV", value=0.050, min_value=0.0, max_value=0.20, step=0.001, format="%.3f")
+
+            c1, c2 = st.columns(2)
+            b_brew_date   = c1.date_input("Brew / Completion Date", value=datetime.today())
+            b_use_by_date = c2.date_input("Use By Date", value=datetime.today())
+
+            st.markdown("**Cans**")
+            c1, c2 = st.columns(2)
+            b_can_size = c1.number_input("Can Size (L)", value=float(beer_can_size.get(b_beer, 0.375)), step=0.005, format="%.3f")
+            b_cans     = c2.number_input("Cans Produced", value=0, min_value=0, step=1)
+
+            st.markdown("**Kegs (by size)**")
+            keg_cols = st.columns(len(KEG_SIZES))
+            b_kegs = {}
+            for col, size in zip(keg_cols, KEG_SIZES):
+                b_kegs[size] = col.number_input(f"{size}L", value=0, min_value=0, step=1, key=f"nb_keg_{size}")
+
+            b_notes = st.text_area("Notes (optional)", placeholder="e.g. short pour, extra keg from top-up brew")
+
+            if st.form_submit_button("➕ Add Batch", type="primary"):
+                if not b_number.strip():
+                    st.error("Please enter a batch number.")
+                else:
+                    new_batch = {
+                        "batch_id": f"{b_beer}__{b_number.strip()}",
+                        "beer_name": b_beer,
+                        "batch_number": b_number.strip(),
+                        "actual_abv": b_abv,
+                        "brew_date": b_brew_date.strftime("%Y-%m-%d"),
+                        "use_by_date": b_use_by_date.strftime("%Y-%m-%d"),
+                        "can_size_l": b_can_size,
+                        "cans_produced": b_cans,
+                        "notes": b_notes,
+                        "archived": False,
+                    }
+                    for size in KEG_SIZES:
+                        new_batch[_keg_field(size)] = b_kegs[size]
+                    batches.append(new_batch)
+                    result = save_batches(batches)
+                    if result is True:
+                        st.success(f"Added batch **{b_number}** for **{b_beer}**.")
+                        st.rerun()
+                    else:
+                        st.error(f"Save issue: {result}")
+
+    st.markdown("---")
+
+    # ── 2. Existing batches, grouped by beer ─────────────────────────────────
+    st.subheader("Batches on Record")
+    active_batches_view = [b for b in batches if not b.get("archived", False)]
+    if not active_batches_view:
+        st.info("No batches recorded yet.")
+    else:
+        for beer_name in sorted(set(b["beer_name"] for b in active_batches_view)):
+            beer_batches = [b for b in active_batches_view if b["beer_name"] == beer_name]
+            soh_states = compute_soh_for_beer(beer_name, batches, stocktakes)
+            soh_by_id  = {s["batch_id"]: s for s in soh_states}
+            st.markdown(f"**{beer_name}**")
+            for b in sorted(beer_batches, key=lambda x: x.get("brew_date", "")):
+                s = soh_by_id.get(b["batch_id"], {})
+                label = (
+                    f"{b['batch_number']}  |  Brewed {b.get('brew_date','—')}  |  "
+                    f"Use by {b.get('use_by_date','—')}  |  "
+                    f"Est. SOH: {s.get('soh_cans_est',0):.0f} cans + {s.get('soh_keg_litres',0):.0f}L kegs"
+                )
+                with st.expander(label):
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Produced (cans)", int(b.get("cans_produced", 0)))
+                    c2.metric("Produced (keg L)", f"{batch_produced_keg_litres(b):.0f} L")
+                    c3.metric("Actual ABV", f"{b.get('actual_abv',0)*100:.1f}%")
+                    keg_summary = ", ".join(f"{b.get(_keg_field(s2),0)}× {s2}L" for s2 in KEG_SIZES if b.get(_keg_field(s2), 0))
+                    st.caption(f"Kegs produced: {keg_summary or 'none'}")
+                    if s.get("last_stocktake_date"):
+                        st.caption(f"Last stocktake: {s['last_stocktake_date']}")
+                    else:
+                        st.caption("No stocktake recorded yet — SOH is a full FIFO estimate from production.")
+                    if b.get("notes"):
+                        st.caption(f"Notes: {b['notes']}")
+                    if st.button("🗄️ Archive batch (no longer in stock)", key=f"arch_{b['batch_id']}"):
+                        for bb in batches:
+                            if bb["batch_id"] == b["batch_id"]:
+                                bb["archived"] = True
+                        save_batches(batches)
+                        st.rerun()
+
+    st.markdown("---")
+
+    # ── 3. Record a stocktake ─────────────────────────────────────────────────
+    st.subheader("📋 Record a Stocktake")
+    st.caption("Enter what was actually counted for a specific batch. This overwrites the calculated SOH from that date forward.")
+
+    active_beers_with_batches = sorted(set(b["beer_name"] for b in active_batches_view))
+    if not active_beers_with_batches:
+        st.info("Add a batch above before recording a stocktake.")
+    else:
+        with st.form("stocktake_form"):
+            c1, c2 = st.columns(2)
+            st_beer = c1.selectbox("Beer", active_beers_with_batches)
+            beer_batch_options = [b for b in active_batches_view if b["beer_name"] == st_beer]
+            st_batch = c2.selectbox(
+                "Batch",
+                beer_batch_options,
+                format_func=lambda b: f"{b['batch_number']} (brewed {b.get('brew_date','—')})"
+            )
+            st_date = st.date_input("Stocktake Date", value=datetime.today())
+
+            st.markdown("**Counted Cans**")
+            st_cans = st.number_input("Cans counted", value=0, min_value=0, step=1)
+
+            st.markdown("**Counted Kegs (by size)**")
+            keg_cols2 = st.columns(len(KEG_SIZES))
+            st_kegs = {}
+            for col, size in zip(keg_cols2, KEG_SIZES):
+                st_kegs[size] = col.number_input(f"{size}L ", value=0, min_value=0, step=1, key=f"st_keg_{size}")
+
+            st_notes = st.text_area("Notes (optional)", key="st_notes")
+
+            if st.form_submit_button("💾 Save Stocktake", type="primary"):
+                new_st = {
+                    "stocktake_id": f"{st_batch['batch_id']}__{st_date.strftime('%Y-%m-%d')}",
+                    "beer_name": st_beer,
+                    "batch_id": st_batch["batch_id"],
+                    "stocktake_date": st_date.strftime("%Y-%m-%d"),
+                    "soh_cans": st_cans,
+                    "notes": st_notes,
+                }
+                for size in KEG_SIZES:
+                    new_st[_keg_field(size)] = st_kegs[size]
+                stocktakes.append(new_st)
+                result = save_stocktakes(stocktakes)
+                if result is True:
+                    st.success(f"Stocktake recorded for {st_beer} — {st_batch['batch_number']}.")
+                    st.rerun()
+                else:
+                    st.error(f"Save issue: {result}")
+
+    st.markdown("---")
+    if stocktakes:
+        st.subheader("Stocktake History")
+        st_df = pd.DataFrame(stocktakes)[["stocktake_date", "beer_name", "batch_id", "soh_cans"] +
+                                         [_keg_field(s) for s in KEG_SIZES] + ["notes"]]
+        st.dataframe(st_df.sort_values("stocktake_date", ascending=False), hide_index=True, use_container_width=True)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PAGE: STOCK FORECAST
+# ─────────────────────────────────────────────────────────────────────────────
+elif page == "📈 Stock Forecast":
+    st.title("📈 Stock Forecast")
+    st.caption(
+        "Estimated stock on hand (SOH) and projected runout, based on recorded batches, "
+        "stocktakes, and historical excise sales. "
+        "Alerts fire when ≤ 2 months of forecast stock remains, or ≤ 3 months to use-by date."
+    )
+
+    batches    = load_batches()
+    stocktakes = load_stocktakes()
+    active_batches = [b for b in batches if not b.get("archived", False)]
+    active_beer_names = sorted(set(b["beer_name"] for b in active_batches))
+
+    if not active_batches:
+        st.info("No active batches found. Record batches in 📦 Batches & Stocktake first.")
+        st.stop()
+
+    # ── Forecast settings ─────────────────────────────────────────────────────
+    with st.expander("⚙️ Forecast Settings", expanded=False):
+        fc1, fc2, fc3 = st.columns(3)
+        forecast_window = fc1.number_input(
+            "Months of sales history to use", value=3, min_value=1, max_value=12, step=1,
+            key="fc_window",
+            help="How many recent excise months to average for the forecast"
+        )
+        use_weighted = fc1.checkbox(
+            "Weighted average (recent months count more)", value=True, key="fc_weighted",
+            help="If checked, the most recent month gets the highest weight"
+        )
+        stock_alert_months = fc2.number_input(
+            "Stock alert threshold (months)", value=2.0, min_value=0.5, max_value=6.0,
+            step=0.5, key="fc_alert_months",
+            help="Show a warning when forecast months remaining ≤ this value"
+        )
+        ubd_alert_months = fc3.number_input(
+            "Use-by alert threshold (months)", value=3.0, min_value=0.5, max_value=6.0,
+            step=0.5, key="fc_ubd_months",
+            help="Show a warning when use-by date is within this many months"
+        )
+
+    st.markdown("---")
+
+    # ── Build forecast for every active beer ─────────────────────────────────
+    today = datetime.today().date()
+    alert_rows   = []
+    summary_rows = []
+
+    for beer_name in active_beer_names:
+        soh_states = compute_soh_for_beer(beer_name, active_batches, stocktakes)
+        if not soh_states:
+            continue
+
+        total_soh_litres = sum(s["soh_total_litres"] for s in soh_states)
+        avg_monthly = weighted_avg_monthly_sales(beer_name, int(forecast_window), use_weighted)
+        months_remaining = round(total_soh_litres / avg_monthly, 1) if avg_monthly > 0 else None
+        ubd_months, ubd_date = months_to_earliest_use_by(beer_name, active_batches, today)
+
+        stock_alert = months_remaining is not None and months_remaining <= stock_alert_months
+        ubd_alert   = ubd_months is not None and ubd_months <= ubd_alert_months
+
+        summary_rows.append({
+            "Beer": beer_name,
+            "SOH (L)": round(total_soh_litres, 1),
+            "Avg Monthly Sales (L)": round(avg_monthly, 1),
+            "Months Remaining (forecast)": months_remaining if months_remaining is not None else "—",
+            "Earliest Use-By": ubd_date.strftime("%Y-%m-%d") if ubd_date else "—",
+            "Months to Use-By": ubd_months if ubd_months is not None else "—",
+            "⚠️ Stock Low": "🔴" if stock_alert else "",
+            "⚠️ Use-By Soon": "🔴" if ubd_alert else "",
+        })
+
+        if stock_alert or ubd_alert:
+            reasons = []
+            if stock_alert:
+                reasons.append(f"only ~{months_remaining} months of forecast stock left")
+            if ubd_alert:
+                reasons.append(f"earliest use-by is in ~{ubd_months} months ({ubd_date.strftime('%Y-%m-%d')})")
+            alert_rows.append(f"**{beer_name}** — " + "; ".join(reasons))
+
+    if alert_rows:
+        st.warning("### 🚨 Alerts\n\n" + "\n\n".join(alert_rows))
+    else:
+        st.success("No stock or use-by alerts at current thresholds.")
+
+    st.markdown("---")
+    st.subheader("Summary — All Beers")
+    if summary_rows:
+        st.dataframe(pd.DataFrame(summary_rows), hide_index=True, use_container_width=True)
+
+    st.markdown("---")
+    st.subheader("Batch-Level Detail")
+    sel_forecast_beer = st.selectbox("View batch breakdown for", active_beer_names)
+    detail_states = compute_soh_for_beer(sel_forecast_beer, active_batches, stocktakes)
+    if detail_states:
+        detail_rows = [{
+            "Batch": s["batch_number"],
+            "Brewed": s["brew_date"],
+            "Use By": s["use_by_date"],
+            "Last Stocktake": s["last_stocktake_date"] or "—",
+            "Est. Cans Left": s["soh_cans_est"],
+            "Est. Keg Litres Left": s["soh_keg_litres"],
+            "Est. Total Litres Left": s["soh_total_litres"],
+        } for s in detail_states]
+        st.dataframe(pd.DataFrame(detail_rows), hide_index=True, use_container_width=True)
+
+    st.caption(
+        "Forecast method: monthly sales volumes come from saved Excise Return history. "
+        "SOH is depleted FIFO (oldest batch first), separately for cans and kegs. "
+        "A stocktake resets the baseline for a batch; only sales dated after the most "
+        "recent stocktake are deducted on top of it."
+    )
