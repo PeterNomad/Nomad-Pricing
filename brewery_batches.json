@@ -13,7 +13,9 @@
     "kegs_10l": 0,
     "kegs_19_5l": 0,
     "kegs_20l": 0,
-    "kegs_30l": 32,
-    "kegs_50l": 0
+    "kegs_30l": 0,
+    "kegs_50l": 32,
+    "cases_16": 114,
+    "cases_24": 0
   }
 ]
