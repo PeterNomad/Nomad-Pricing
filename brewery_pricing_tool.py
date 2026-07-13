@@ -696,12 +696,17 @@ def compute_excise_summary(rows):
 BATCHES_FILE    = os.path.join(BASE_DIR, "brewery_batches.json")
 STOCKTAKES_FILE = os.path.join(BASE_DIR, "brewery_stocktakes.json")
 
-KEG_SIZES = [10, 19.5, 20, 30, 50]  # standard keg sizes in litres
+KEG_SIZES  = [10, 20, 30, 50]   # standard keg sizes in litres
+CASE_SIZES = [16, 24]           # standard case sizes in cans-per-case
 
 def _keg_field(size_l):
     """Field name for a keg size, e.g. 10 -> 'kegs_10l', 19.5 -> 'kegs_19_5l'."""
     s = str(size_l).replace(".", "_")
     return f"kegs_{s}l"
+
+def _case_field(cans_per_case):
+    """Field name for a case size, e.g. 16 -> 'cases_16', 24 -> 'cases_24'."""
+    return f"cases_{int(cans_per_case)}"
 
 def load_batches():
     if GITHUB_ENABLED:
@@ -770,8 +775,13 @@ def save_stocktakes(stocktakes):
 #     there to periodically true it back up.
 # ─────────────────────────────────────────────────────────────────────────────
 
+def batch_total_cans(batch):
+    """Total cans produced, from case quantities (+ any legacy loose 'cans_produced' value)."""
+    return (sum(batch.get(_case_field(c), 0) * c for c in CASE_SIZES)
+            + batch.get("cans_produced", 0))  # legacy field, kept for batches recorded before case tracking
+
 def batch_produced_can_litres(batch):
-    return batch.get("cans_produced", 0) * batch.get("can_size_l", 0.375)
+    return batch_total_cans(batch) * batch.get("can_size_l", 0.375)
 
 def batch_produced_keg_litres(batch):
     return sum(batch.get(_keg_field(s), 0) * s for s in KEG_SIZES)
@@ -826,7 +836,8 @@ def compute_soh_for_beer(beer_name, batches, stocktakes):
             "can_size_l":   b.get("can_size_l", 0.375),
             "soh_can_litres": batch_produced_can_litres(b),
             "soh_keg_litres": batch_produced_keg_litres(b),
-            "soh_kegs_by_size": {s: b.get(_keg_field(s), 0) for s in KEG_SIZES},
+            "soh_kegs_by_size":  {s: b.get(_keg_field(s), 0) for s in KEG_SIZES},
+            "soh_cases_by_size": {c: b.get(_case_field(c), 0) for c in CASE_SIZES},
             "last_stocktake_date": None,
             "baseline_date": b.get("brew_date", ""),  # sales after this date get deducted
         }
@@ -837,7 +848,9 @@ def compute_soh_for_beer(beer_name, batches, stocktakes):
         matching = [s for s in beer_stocktakes if s.get("batch_id") == state["batch_id"]]
         if matching:
             latest = sorted(matching, key=lambda s: s.get("stocktake_date", ""))[-1]
-            state["soh_can_litres"] = latest.get("soh_cans", 0) * state["can_size_l"]
+            state["soh_cases_by_size"] = {c: latest.get(_case_field(c), 0) for c in CASE_SIZES}
+            counted_cans = sum(state["soh_cases_by_size"][c] * c for c in CASE_SIZES) + latest.get("soh_cans", 0)
+            state["soh_can_litres"] = counted_cans * state["can_size_l"]
             state["soh_kegs_by_size"] = {s: latest.get(_keg_field(s), 0) for s in KEG_SIZES}
             state["soh_keg_litres"] = sum(state["soh_kegs_by_size"][s] * s for s in KEG_SIZES)
             state["last_stocktake_date"] = latest.get("stocktake_date", "")
@@ -1912,9 +1925,13 @@ elif page == "📦 Batches & Stocktake":
             b_use_by_date = c2.date_input("Use By Date", value=datetime.today())
 
             st.markdown("**Cans**")
-            c1, c2 = st.columns(2)
-            b_can_size = c1.number_input("Can Size (L)", value=float(beer_can_size.get(b_beer, 0.375)), step=0.005, format="%.3f")
-            b_cans     = c2.number_input("Cans Produced", value=0, min_value=0, step=1)
+            b_can_size = st.number_input("Can Size (L)", value=float(beer_can_size.get(b_beer, 0.375)), step=0.005, format="%.3f")
+
+            st.markdown("**Cases (by case size)**")
+            case_cols = st.columns(len(CASE_SIZES))
+            b_cases = {}
+            for col, csize in zip(case_cols, CASE_SIZES):
+                b_cases[csize] = col.number_input(f"{csize}-pack cases", value=0, min_value=0, step=1, key=f"nb_case_{csize}")
 
             st.markdown("**Kegs (by size)**")
             keg_cols = st.columns(len(KEG_SIZES))
@@ -1936,12 +1953,13 @@ elif page == "📦 Batches & Stocktake":
                         "brew_date": b_brew_date.strftime("%Y-%m-%d"),
                         "use_by_date": b_use_by_date.strftime("%Y-%m-%d"),
                         "can_size_l": b_can_size,
-                        "cans_produced": b_cans,
                         "notes": b_notes,
                         "archived": False,
                     }
                     for size in KEG_SIZES:
                         new_batch[_keg_field(size)] = b_kegs[size]
+                    for csize in CASE_SIZES:
+                        new_batch[_case_field(csize)] = b_cases[csize]
                     batches.append(new_batch)
                     result = save_batches(batches)
                     if result is True:
@@ -1972,23 +1990,121 @@ elif page == "📦 Batches & Stocktake":
                 )
                 with st.expander(label):
                     c1, c2, c3 = st.columns(3)
-                    c1.metric("Produced (cans)", int(b.get("cans_produced", 0)))
+                    c1.metric("Produced (cans)", int(batch_total_cans(b)))
                     c2.metric("Produced (keg L)", f"{batch_produced_keg_litres(b):.0f} L")
                     c3.metric("Actual ABV", f"{b.get('actual_abv',0)*100:.1f}%")
+                    case_summary = ", ".join(f"{b.get(_case_field(c2s),0)}× {c2s}-pack" for c2s in CASE_SIZES if b.get(_case_field(c2s), 0))
                     keg_summary = ", ".join(f"{b.get(_keg_field(s2),0)}× {s2}L" for s2 in KEG_SIZES if b.get(_keg_field(s2), 0))
-                    st.caption(f"Kegs produced: {keg_summary or 'none'}")
+                    st.caption(f"Cases produced: {case_summary or 'none'}  |  Kegs produced: {keg_summary or 'none'}")
                     if s.get("last_stocktake_date"):
                         st.caption(f"Last stocktake: {s['last_stocktake_date']}")
                     else:
                         st.caption("No stocktake recorded yet — SOH is a full FIFO estimate from production.")
                     if b.get("notes"):
                         st.caption(f"Notes: {b['notes']}")
-                    if st.button("🗄️ Archive batch (no longer in stock)", key=f"arch_{b['batch_id']}"):
+
+                    st.markdown("---")
+                    st.markdown("**✏️ Edit this batch**")
+                    bid = b["batch_id"]
+                    with st.form(f"edit_batch_{bid}"):
+                        e1, e2, e3 = st.columns(3)
+                        edit_beer = e1.selectbox(
+                            "Beer", all_beer_names,
+                            index=all_beer_names.index(b["beer_name"]) if b["beer_name"] in all_beer_names else 0,
+                            key=f"eb_beer_{bid}"
+                        )
+                        edit_number = e2.text_input("Batch Number", value=b.get("batch_number",""), key=f"eb_num_{bid}")
+                        edit_abv = e3.number_input(
+                            "Actual ABV", value=float(b.get("actual_abv", 0.05)),
+                            min_value=0.0, max_value=0.20, step=0.001, format="%.3f", key=f"eb_abv_{bid}"
+                        )
+                        e1, e2 = st.columns(2)
+                        try:
+                            brew_default = datetime.strptime(b.get("brew_date",""), "%Y-%m-%d")
+                        except Exception:
+                            brew_default = datetime.today()
+                        try:
+                            useby_default = datetime.strptime(b.get("use_by_date",""), "%Y-%m-%d")
+                        except Exception:
+                            useby_default = datetime.today()
+                        edit_brew_date   = e1.date_input("Brew / Completion Date", value=brew_default, key=f"eb_brew_{bid}")
+                        edit_use_by_date = e2.date_input("Use By Date",             value=useby_default, key=f"eb_useby_{bid}")
+
+                        edit_can_size = st.number_input(
+                            "Can Size (L)", value=float(b.get("can_size_l", 0.375)),
+                            step=0.005, format="%.3f", key=f"eb_cansize_{bid}"
+                        )
+                        edit_case_cols = st.columns(len(CASE_SIZES))
+                        edit_cases = {}
+                        for col, csize in zip(edit_case_cols, CASE_SIZES):
+                            edit_cases[csize] = col.number_input(
+                                f"{csize}-pack cases", value=int(b.get(_case_field(csize), 0)),
+                                min_value=0, step=1, key=f"eb_case_{csize}_{bid}"
+                            )
+                        edit_keg_cols = st.columns(len(KEG_SIZES))
+                        edit_kegs = {}
+                        for col, size in zip(edit_keg_cols, KEG_SIZES):
+                            edit_kegs[size] = col.number_input(
+                                f"{size}L", value=int(b.get(_keg_field(size), 0)),
+                                min_value=0, step=1, key=f"eb_keg_{size}_{bid}"
+                            )
+                        edit_notes = st.text_area("Notes", value=b.get("notes",""), key=f"eb_notes_{bid}")
+
+                        if st.form_submit_button("💾 Save Changes"):
+                            if not edit_number.strip():
+                                st.error("Batch number can't be blank.")
+                            else:
+                                new_bid = f"{edit_beer}__{edit_number.strip()}"
+                                for bb in batches:
+                                    if bb["batch_id"] == bid:
+                                        bb["batch_id"]     = new_bid
+                                        bb["beer_name"]    = edit_beer
+                                        bb["batch_number"] = edit_number.strip()
+                                        bb["actual_abv"]   = edit_abv
+                                        bb["brew_date"]    = edit_brew_date.strftime("%Y-%m-%d")
+                                        bb["use_by_date"]  = edit_use_by_date.strftime("%Y-%m-%d")
+                                        bb["can_size_l"]   = edit_can_size
+                                        bb["notes"]        = edit_notes
+                                        for csize in CASE_SIZES:
+                                            bb[_case_field(csize)] = edit_cases[csize]
+                                        for size in KEG_SIZES:
+                                            bb[_keg_field(size)] = edit_kegs[size]
+                                if new_bid != bid:
+                                    # keep linked stocktakes pointing at the right batch
+                                    for st_rec in stocktakes:
+                                        if st_rec.get("batch_id") == bid:
+                                            st_rec["batch_id"] = new_bid
+                                    save_stocktakes(stocktakes)
+                                result = save_batches(batches)
+                                if result is True:
+                                    st.success("Batch updated.")
+                                    st.rerun()
+                                else:
+                                    st.error(f"Save issue: {result}")
+
+                    c1, c2 = st.columns(2)
+                    if c1.button("🗄️ Archive batch (no longer in stock)", key=f"arch_{bid}"):
                         for bb in batches:
-                            if bb["batch_id"] == b["batch_id"]:
+                            if bb["batch_id"] == bid:
                                 bb["archived"] = True
                         save_batches(batches)
                         st.rerun()
+                    if c2.button("🗑️ Delete batch permanently", key=f"delbtn_{bid}"):
+                        st.session_state[f"confirm_delbatch_{bid}"] = True
+                        st.rerun()
+                    if st.session_state.get(f"confirm_delbatch_{bid}"):
+                        confirmed_b = st.checkbox(
+                            f"Yes, permanently delete batch **{b['batch_number']}** and any stocktakes recorded against it — this cannot be undone",
+                            key=f"chkdel_{bid}"
+                        )
+                        if confirmed_b:
+                            batches[:]    = [bb for bb in batches if bb["batch_id"] != bid]
+                            stocktakes[:] = [s for s in stocktakes if s.get("batch_id") != bid]
+                            save_batches(batches)
+                            save_stocktakes(stocktakes)
+                            st.session_state.pop(f"confirm_delbatch_{bid}", None)
+                            st.success("Batch deleted.")
+                            st.rerun()
 
     st.markdown("---")
 
@@ -2011,8 +2127,11 @@ elif page == "📦 Batches & Stocktake":
             )
             st_date = st.date_input("Stocktake Date", value=datetime.today())
 
-            st.markdown("**Counted Cans**")
-            st_cans = st.number_input("Cans counted", value=0, min_value=0, step=1)
+            st.markdown("**Counted Cases (by case size)**")
+            st_case_cols = st.columns(len(CASE_SIZES))
+            st_cases = {}
+            for col, csize in zip(st_case_cols, CASE_SIZES):
+                st_cases[csize] = col.number_input(f"{csize}-pack cases", value=0, min_value=0, step=1, key=f"st_case_{csize}")
 
             st.markdown("**Counted Kegs (by size)**")
             keg_cols2 = st.columns(len(KEG_SIZES))
@@ -2028,11 +2147,12 @@ elif page == "📦 Batches & Stocktake":
                     "beer_name": st_beer,
                     "batch_id": st_batch["batch_id"],
                     "stocktake_date": st_date.strftime("%Y-%m-%d"),
-                    "soh_cans": st_cans,
                     "notes": st_notes,
                 }
                 for size in KEG_SIZES:
                     new_st[_keg_field(size)] = st_kegs[size]
+                for csize in CASE_SIZES:
+                    new_st[_case_field(csize)] = st_cases[csize]
                 stocktakes.append(new_st)
                 result = save_stocktakes(stocktakes)
                 if result is True:
@@ -2044,9 +2164,79 @@ elif page == "📦 Batches & Stocktake":
     st.markdown("---")
     if stocktakes:
         st.subheader("Stocktake History")
-        st_df = pd.DataFrame(stocktakes)[["stocktake_date", "beer_name", "batch_id", "soh_cans"] +
-                                         [_keg_field(s) for s in KEG_SIZES] + ["notes"]]
+        want_cols = (["stocktake_date", "beer_name", "batch_id"] +
+                     [_case_field(c) for c in CASE_SIZES] +
+                     [_keg_field(s) for s in KEG_SIZES] + ["notes"])
+        st_df = pd.DataFrame(stocktakes)
+        for col in want_cols:
+            if col not in st_df.columns:
+                st_df[col] = 0
+        st_df = st_df[want_cols]
         st.dataframe(st_df.sort_values("stocktake_date", ascending=False), hide_index=True, use_container_width=True)
+
+        st.markdown("**✏️ Edit or delete a stocktake entry**")
+        batch_num_by_id = {b["batch_id"]: b["batch_number"] for b in batches}
+        for idx, srec in enumerate(sorted(stocktakes, key=lambda x: x.get("stocktake_date",""), reverse=True)):
+            sid = srec.get("stocktake_id") or f"legacy_{idx}"
+            batch_label = batch_num_by_id.get(srec.get("batch_id"), srec.get("batch_id","—"))
+            with st.expander(f"{srec.get('stocktake_date','—')}  |  {srec.get('beer_name','—')}  |  {batch_label}"):
+                with st.form(f"edit_stocktake_{sid}"):
+                    e1, e2 = st.columns(2)
+                    try:
+                        st_date_default = datetime.strptime(srec.get("stocktake_date",""), "%Y-%m-%d")
+                    except Exception:
+                        st_date_default = datetime.today()
+                    edit_st_date = e1.date_input("Stocktake Date", value=st_date_default, key=f"est_date_{sid}")
+                    e2.text_input("Batch", value=batch_label, disabled=True, key=f"est_batch_{sid}")
+
+                    st.markdown("**Counted Cases**")
+                    ecase_cols = st.columns(len(CASE_SIZES))
+                    edit_st_cases = {}
+                    for col, csize in zip(ecase_cols, CASE_SIZES):
+                        edit_st_cases[csize] = col.number_input(
+                            f"{csize}-pack cases", value=int(srec.get(_case_field(csize), 0)),
+                            min_value=0, step=1, key=f"est_case_{csize}_{sid}"
+                        )
+                    st.markdown("**Counted Kegs**")
+                    ekeg_cols = st.columns(len(KEG_SIZES))
+                    edit_st_kegs = {}
+                    for col, size in zip(ekeg_cols, KEG_SIZES):
+                        edit_st_kegs[size] = col.number_input(
+                            f"{size}L", value=int(srec.get(_keg_field(size), 0)),
+                            min_value=0, step=1, key=f"est_keg_{size}_{sid}"
+                        )
+                    edit_st_notes = st.text_area("Notes", value=srec.get("notes",""), key=f"est_notes_{sid}")
+
+                    if st.form_submit_button("💾 Save Changes"):
+                        for s2 in stocktakes:
+                            if s2.get("stocktake_id") == sid:
+                                s2["stocktake_date"] = edit_st_date.strftime("%Y-%m-%d")
+                                s2["notes"] = edit_st_notes
+                                for csize in CASE_SIZES:
+                                    s2[_case_field(csize)] = edit_st_cases[csize]
+                                for size in KEG_SIZES:
+                                    s2[_keg_field(size)] = edit_st_kegs[size]
+                        result = save_stocktakes(stocktakes)
+                        if result is True:
+                            st.success("Stocktake updated.")
+                            st.rerun()
+                        else:
+                            st.error(f"Save issue: {result}")
+
+                if st.button("🗑️ Delete this stocktake", key=f"delst_{sid}"):
+                    st.session_state[f"confirm_delst_{sid}"] = True
+                    st.rerun()
+                if st.session_state.get(f"confirm_delst_{sid}"):
+                    confirmed_s = st.checkbox(
+                        "Yes, permanently delete this stocktake entry — this cannot be undone",
+                        key=f"chkdelst_{sid}"
+                    )
+                    if confirmed_s:
+                        stocktakes[:] = [s for s in stocktakes if s.get("stocktake_id") != sid]
+                        save_stocktakes(stocktakes)
+                        st.session_state.pop(f"confirm_delst_{sid}", None)
+                        st.success("Stocktake deleted.")
+                        st.rerun()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
