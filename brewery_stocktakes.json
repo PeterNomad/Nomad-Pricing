@@ -11,5 +11,18 @@
     "kegs_50l": 15,
     "cases_16": 50,
     "cases_24": 0
+  },
+  {
+    "stocktake_id": "Rainbow Cherry__Test001__2026-06-01",
+    "beer_name": "Rainbow Cherry",
+    "batch_id": "Rainbow Cherry__Test001",
+    "stocktake_date": "2026-06-01",
+    "notes": "Test stocktake 2",
+    "kegs_10l": 0,
+    "kegs_20l": 0,
+    "kegs_30l": 0,
+    "kegs_50l": 10,
+    "cases_16": 25,
+    "cases_24": 0
   }
 ]
