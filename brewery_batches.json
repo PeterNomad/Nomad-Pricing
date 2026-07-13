@@ -17,5 +17,22 @@
     "kegs_50l": 32,
     "cases_16": 114,
     "cases_24": 0
+  },
+  {
+    "batch_id": "Rainbow Cherry__Test001",
+    "beer_name": "Rainbow Cherry",
+    "batch_number": "Test001",
+    "actual_abv": 0.061,
+    "brew_date": "2026-04-01",
+    "use_by_date": "2027-04-01",
+    "can_size_l": 0.44,
+    "notes": "Dummy data - used for app testing only ",
+    "archived": false,
+    "kegs_10l": 0,
+    "kegs_20l": 0,
+    "kegs_30l": 0,
+    "kegs_50l": 18,
+    "cases_16": 100,
+    "cases_24": 0
   }
 ]
