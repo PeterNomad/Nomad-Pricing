@@ -2,7 +2,7 @@
   {
     "stocktake_id": "Rainbow Cherry__Test001__2026-05-01",
     "beer_name": "Rainbow Cherry",
-    "batch_id": "Rainbow Cherry__Test001",
+    "batch_id": "Rainbow Cherry__Test001a",
     "stocktake_date": "2026-05-01",
     "notes": "Test stocktake 1",
     "kegs_10l": 0,
@@ -15,7 +15,7 @@
   {
     "stocktake_id": "Rainbow Cherry__Test001__2026-06-01",
     "beer_name": "Rainbow Cherry",
-    "batch_id": "Rainbow Cherry__Test001",
+    "batch_id": "Rainbow Cherry__Test001a",
     "stocktake_date": "2026-06-01",
     "notes": "Test stocktake 2",
     "kegs_10l": 0,
