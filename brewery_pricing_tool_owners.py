@@ -444,7 +444,7 @@ def unchanged_fields(beer):
 # ─────────────────────────────────────────────────────────────────────────────
 # SIDEBAR
 # ─────────────────────────────────────────────────────────────────────────────
-st.sidebar.title("🍺 Nomad Owners")
+st.sidebar.title("🍺 Pricing & Inventory")
 page = st.sidebar.radio("Navigate", [
     "📊 Price Lookup", "📋 Price Lists",
     "📦 Batches & Stocktake", "📈 Stock Forecast",
