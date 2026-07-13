@@ -911,6 +911,103 @@ def weighted_avg_monthly_sales(beer_name, window_months=3, weighted=True):
         return sum(t * w for t, w in zip(totals, weights)) / sum(weights)
     return sum(totals) / len(totals)
 
+def weighted_avg_monthly_sales_split(beer_name, window_months=3, weighted=True):
+    """Same as weighted_avg_monthly_sales, but returns (avg_can_litres, avg_keg_litres) separately."""
+    monthly = get_excise_monthly_sales_by_package(beer_name)
+    if not monthly:
+        return 0.0, 0.0
+    periods = sorted(monthly.keys())[-window_months:]
+    if not periods:
+        return 0.0, 0.0
+    can_totals = [monthly[p]["can"] for p in periods]
+    keg_totals = [monthly[p]["keg"] for p in periods]
+    if weighted:
+        weights = list(range(1, len(periods) + 1))
+        avg_can = sum(t * w for t, w in zip(can_totals, weights)) / sum(weights)
+        avg_keg = sum(t * w for t, w in zip(keg_totals, weights)) / sum(weights)
+    else:
+        avg_can = sum(can_totals) / len(can_totals)
+        avg_keg = sum(keg_totals) / len(keg_totals)
+    return avg_can, avg_keg
+
+def compute_package_summary_rows(beer_name, batches, stocktakes, window_months, weighted,
+                                  stock_alert_months, ubd_alert_months, today):
+    """
+    Build one summary row per package size (case size / keg size) that this beer's
+    batches have actually produced a positive quantity of — expressed in package
+    units (cases / kegs) rather than litres.
+
+    Since sales data only distinguishes can vs keg (not which case/keg size was
+    sold), litres-remaining and avg-monthly-litres for the can pool (or keg pool)
+    are allocated across sizes in proportion to each size's share of the last
+    known baseline mix (from the most recent stocktake, or production if none).
+    This means every case size shares the same "months remaining" figure, and
+    likewise for every keg size — that's expected, not a bug.
+    """
+    states = compute_soh_for_beer(beer_name, batches, stocktakes)
+    if not states:
+        return []
+
+    can_size_l = states[-1]["can_size_l"] or 0.375
+
+    total_soh_can = sum(s["soh_can_litres"] for s in states)
+    total_soh_keg = sum(s["soh_keg_litres"] for s in states)
+
+    baseline_can_total = sum(
+        sum(s["soh_cases_by_size"].get(c, 0) * c * s["can_size_l"] for c in CASE_SIZES) for s in states
+    )
+    baseline_keg_total = sum(
+        sum(s["soh_kegs_by_size"].get(k, 0) * k for k in KEG_SIZES) for s in states
+    )
+
+    ratio_can = (total_soh_can / baseline_can_total) if baseline_can_total > 0 else 0.0
+    ratio_keg = (total_soh_keg / baseline_keg_total) if baseline_keg_total > 0 else 0.0
+
+    avg_can_l, avg_keg_l = weighted_avg_monthly_sales_split(beer_name, window_months, weighted)
+    months_can = round(total_soh_can / avg_can_l, 1) if avg_can_l > 0 else None
+    months_keg = round(total_soh_keg / avg_keg_l, 1) if avg_keg_l > 0 else None
+    ubd_months, ubd_date = months_to_earliest_use_by(beer_name, batches, today)
+    ubd_alert = ubd_months is not None and ubd_months <= ubd_alert_months
+
+    rows = []
+    for c in CASE_SIZES:
+        baseline_qty = sum(s["soh_cases_by_size"].get(c, 0) for s in states)
+        if baseline_qty <= 0:
+            continue  # this beer has never had a positive quantity of this case size
+        current_qty = round(baseline_qty * ratio_can, 1)
+        size_litres_baseline = sum(s["soh_cases_by_size"].get(c, 0) * c * s["can_size_l"] for s in states)
+        frac = (size_litres_baseline / baseline_can_total) if baseline_can_total > 0 else 0
+        avg_qty_month = round((avg_can_l * frac) / (c * can_size_l), 1) if (avg_can_l > 0 and can_size_l > 0) else 0
+        stock_alert = months_can is not None and months_can <= stock_alert_months
+        rows.append({
+            "Beer": beer_name, "Package": f"{c}-pack cases",
+            "Qty On Hand": current_qty, "Avg Monthly Qty": avg_qty_month,
+            "Months Remaining (forecast)": months_can if months_can is not None else "—",
+            "Earliest Use-By": ubd_date.strftime("%Y-%m-%d") if ubd_date else "—",
+            "Months to Use-By": ubd_months if ubd_months is not None else "—",
+            "⚠️ Stock Low": "🔴" if stock_alert else "",
+            "⚠️ Use-By Soon": "🔴" if ubd_alert else "",
+        })
+
+    for k in KEG_SIZES:
+        baseline_qty = sum(s["soh_kegs_by_size"].get(k, 0) for s in states)
+        if baseline_qty <= 0:
+            continue
+        current_qty = round(baseline_qty * ratio_keg, 1)
+        frac = (baseline_qty * k / baseline_keg_total) if baseline_keg_total > 0 else 0
+        avg_qty_month = round((avg_keg_l * frac) / k, 1) if avg_keg_l > 0 else 0
+        stock_alert = months_keg is not None and months_keg <= stock_alert_months
+        rows.append({
+            "Beer": beer_name, "Package": f"{k}L kegs",
+            "Qty On Hand": current_qty, "Avg Monthly Qty": avg_qty_month,
+            "Months Remaining (forecast)": months_keg if months_keg is not None else "—",
+            "Earliest Use-By": ubd_date.strftime("%Y-%m-%d") if ubd_date else "—",
+            "Months to Use-By": ubd_months if ubd_months is not None else "—",
+            "⚠️ Stock Low": "🔴" if stock_alert else "",
+            "⚠️ Use-By Soon": "🔴" if ubd_alert else "",
+        })
+    return rows
+
 def months_to_earliest_use_by(beer_name, batches, today=None):
     """Months from today to the earliest use-by date among active, non-empty batches."""
     today = today or datetime.today().date()
@@ -2330,35 +2427,27 @@ elif page == "📈 Stock Forecast":
     summary_rows = []
 
     for beer_name in active_beer_names:
-        soh_states = compute_soh_for_beer(beer_name, active_batches, stocktakes)
-        if not soh_states:
+        pkg_rows = compute_package_summary_rows(
+            beer_name, active_batches, stocktakes,
+            int(forecast_window), use_weighted, stock_alert_months, ubd_alert_months, today
+        )
+        if not pkg_rows:
             continue
+        summary_rows.extend(pkg_rows)
 
-        total_soh_litres = sum(s["soh_total_litres"] for s in soh_states)
-        avg_monthly = weighted_avg_monthly_sales(beer_name, int(forecast_window), use_weighted)
-        months_remaining = round(total_soh_litres / avg_monthly, 1) if avg_monthly > 0 else None
-        ubd_months, ubd_date = months_to_earliest_use_by(beer_name, active_batches, today)
-
-        stock_alert = months_remaining is not None and months_remaining <= stock_alert_months
-        ubd_alert   = ubd_months is not None and ubd_months <= ubd_alert_months
-
-        summary_rows.append({
-            "Beer": beer_name,
-            "SOH (L)": round(total_soh_litres, 1),
-            "Avg Monthly Sales (L)": round(avg_monthly, 1),
-            "Months Remaining (forecast)": months_remaining if months_remaining is not None else "—",
-            "Earliest Use-By": ubd_date.strftime("%Y-%m-%d") if ubd_date else "—",
-            "Months to Use-By": ubd_months if ubd_months is not None else "—",
-            "⚠️ Stock Low": "🔴" if stock_alert else "",
-            "⚠️ Use-By Soon": "🔴" if ubd_alert else "",
-        })
-
-        if stock_alert or ubd_alert:
+        low_pkgs = [r["Package"] for r in pkg_rows if r["⚠️ Stock Low"]]
+        ubd_flag = any(r["⚠️ Use-By Soon"] for r in pkg_rows)
+        if low_pkgs or ubd_flag:
             reasons = []
-            if stock_alert:
-                reasons.append(f"only ~{months_remaining} months of forecast stock left")
-            if ubd_alert:
-                reasons.append(f"earliest use-by is in ~{ubd_months} months ({ubd_date.strftime('%Y-%m-%d')})")
+            if low_pkgs:
+                # months remaining is the same across all sizes sharing a pool (can/keg),
+                # so just report the low-stock line once per pool affected
+                seen_months = {r["Package"]: r["Months Remaining (forecast)"] for r in pkg_rows if r["⚠️ Stock Low"]}
+                for pkg, months in seen_months.items():
+                    reasons.append(f"{pkg}: only ~{months} months of forecast stock left")
+            if ubd_flag:
+                ubd_row = next(r for r in pkg_rows if r["⚠️ Use-By Soon"])
+                reasons.append(f"earliest use-by is in ~{ubd_row['Months to Use-By']} months ({ubd_row['Earliest Use-By']})")
             alert_rows.append(f"**{beer_name}** — " + "; ".join(reasons))
 
     if alert_rows:
@@ -2367,7 +2456,12 @@ elif page == "📈 Stock Forecast":
         st.success("No stock or use-by alerts at current thresholds.")
 
     st.markdown("---")
-    st.subheader("Summary — All Beers")
+    st.subheader("Summary — All Beers, by Package Size")
+    st.caption(
+        "Only package sizes that have had a positive quantity recorded in at least one batch are shown. "
+        "Months remaining is shared across all case sizes (from the can pool) and across all keg sizes "
+        "(from the keg pool), since sales data doesn't distinguish which size was sold."
+    )
     if summary_rows:
         st.dataframe(pd.DataFrame(summary_rows), hide_index=True, use_container_width=True)
 
