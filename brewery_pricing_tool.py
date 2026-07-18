@@ -525,9 +525,16 @@ SERVE_SIZE_L = {
     "case": "case", "case special": "case",
 }
 
-XERO_EXCLUDE = ["delivery", "rent", "rubbish", "note", "kegswappa",
+XERO_EXCLUDE = ["deliver", "pick up", "rent", "rubbish", "note", "kegswappa",
                 "total", "summary", "sales by", "other sales", "cash sales",
-                "credits", "total sales"]
+                "credits", "total sales", "discount", "rebate", "artwork",
+                "payment terms", "please pay", "please delete",
+                "newly established", "bank account"]
+
+# Exact-match (not substring) exclusions — for short generic labels that would
+# otherwise false-positive against real beer names containing the same word
+# (e.g. a beer with "sales" or "rent" as part of its name).
+XERO_EXCLUDE_EXACT = {"sales"}
 
 def parse_square_email(body_text, beer_lookup):
     """
@@ -597,13 +604,20 @@ def parse_square_email(body_text, beer_lookup):
 
 def parse_xero_report(df_raw, beer_lookup):
     """
-    Parse Xero Sales by Item report dataframe.
+    Parse a Xero sales export dataframe. Handles two known Xero export formats:
+      - "Sales by Item" report:  columns "Item", "Quantity Sold"
+      - "Sales Invoices" export: columns "Description" (+ "InventoryItemCode"), "Quantity"
     Returns list of dicts similar to parse_square_email.
     """
-    # Find header row
+    # Find header row — look for the row containing an actual column header
+    # ("Item" or "Description" as a standalone cell, not just a substring
+    # match, since "InventoryItemCode" also contains the substring "Item").
     header_row = None
     for i, row in df_raw.iterrows():
-        if "Item" in str(row.values) and "Quantity" in str(row.values):
+        cells = [str(v).strip() for v in row.values]
+        has_item_col = ("Item" in cells) or ("Description" in cells) or ("InventoryItemCode" in cells)
+        has_qty_col  = ("Quantity" in cells) or ("Quantity Sold" in cells)
+        if has_item_col and has_qty_col:
             header_row = i
             break
     if header_row is None:
@@ -611,12 +625,19 @@ def parse_xero_report(df_raw, beer_lookup):
     df_raw.columns = df_raw.iloc[header_row]
     df = df_raw.iloc[header_row+1:].reset_index(drop=True)
 
+    # Pick whichever column names are actually present in this export
+    item_col = "Item" if "Item" in df.columns else ("Description" if "Description" in df.columns else None)
+    qty_col  = "Quantity Sold" if "Quantity Sold" in df.columns else ("Quantity" if "Quantity" in df.columns else None)
+    if item_col is None or qty_col is None:
+        return []
+
     results = []
     for _, row in df.iterrows():
-        item = row.get("Item","")
-        qty_raw = row.get("Quantity Sold", None)
+        item = row.get(item_col,"")
+        qty_raw = row.get(qty_col, None)
         if not isinstance(item, str) or not item.strip(): continue
-        item_l = item.lower()
+        item_l = item.lower().strip()
+        if item_l in XERO_EXCLUDE_EXACT: continue
         if any(kw in item_l for kw in XERO_EXCLUDE): continue
         try:
             qty = int(float(qty_raw))
@@ -1535,13 +1556,16 @@ elif page == "🍺 Beer Inputs":
                 # Either no warnings, or user clicked Add a second time to confirm
                 beers.append(new_beer)
                 compute_all.clear()
-                save_settings(st.session_state.gi, beers)
+                result = save_settings(st.session_state.gi, beers)
                 # Clear the add-beer session state
                 for k in ["nb_name","nb_abv","nb_batch","nb_can_size","nb_can_prop",
                           "nb_keg_prop","nb_cpc","nb_raw","nb_margin","nb_royalty",
                           "nb_pak_tech","nb_warn_shown"]:
                     st.session_state.pop(k, None)
-                st.success(f"Added **{new_name}**!")
+                if result is True:
+                    st.success(f"Added **{new_name}**!")
+                else:
+                    st.error(f"Added **{new_name}** but save failed: {result}")
                 st.rerun()
 
     st.markdown("---")
@@ -1573,8 +1597,11 @@ elif page == "🍺 Beer Inputs":
                     else:
                         beers[i] = beer
                         compute_all.clear()
-                        save_settings(st.session_state.gi, beers)
-                        st.success("Saved!")
+                        result = save_settings(st.session_state.gi, beers)
+                        if result is True:
+                            st.success("Saved!")
+                        else:
+                            st.error(f"Save failed: {result}")
                         st.rerun()
 
             # Delete with confirm checkbox — outside form so it persists
@@ -1591,9 +1618,18 @@ elif page == "🍺 Beer Inputs":
                 if confirmed:
                     beers.pop(i)
                     compute_all.clear()
-                    save_settings(st.session_state.gi, beers)
+                    result = save_settings(st.session_state.gi, beers)
                     st.session_state.pop(confirm_key, None)
+                    if result is not True:
+                        st.session_state["beer_delete_save_error"] = str(result)
                     st.rerun()
+
+    if st.session_state.get("beer_delete_save_error"):
+        st.error(f"Delete removed the beer locally but the GitHub save failed: "
+                 f"{st.session_state['beer_delete_save_error']}")
+        if st.button("Dismiss", key="dismiss_del_err"):
+            st.session_state.pop("beer_delete_save_error", None)
+            st.rerun()
 
     st.session_state.beers = beers
 
