@@ -1892,24 +1892,37 @@ elif page == "🧾 Excise Return":
     st.caption("Upload the Square Sales Report email saved as a .msg file.")
     sq_file = st.file_uploader("Square .msg file", type=["msg"], key=f"sq_{period_key}")
     if sq_file:
-        try:
-            import extract_msg, tempfile
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".msg") as tmp:
-                tmp.write(sq_file.read())
-                tmp_path = tmp.name
-            msg = extract_msg.Message(tmp_path)
-            os.unlink(tmp_path)
-            sq_rows = parse_square_email(msg.body, beer_lookup)
-            if sq_rows:
-                # Remove any existing Square rows and replace
-                all_rows = [r for r in all_rows if r["source"] != "Tap Room (Square)"]
-                all_rows.extend(sq_rows)
-                st.session_state[rows_key] = all_rows
-                st.success(f"✅ Extracted {len(sq_rows)} line items from Square report.")
-            else:
-                st.warning("No Nomad/Gweilo beer items found in this email.")
-        except Exception as e:
-            st.error(f"Could not parse Square email: {e}")
+        sq_identity = f"{sq_file.name}:{sq_file.size}"
+        sq_marker_key = f"sq_processed_{period_key}"
+        already_processed = st.session_state.get(sq_marker_key) == sq_identity
+        force_reextract = st.button(
+            "🔄 Re-extract from this file",
+            key=f"sq_reextract_{period_key}",
+            disabled=not already_processed,
+            help="The file is already loaded — use this if you've added/renamed beers and want fresh fuzzy-matching, or added beers since importing. This will overwrite any manual edits made to Square rows.",
+        )
+        if not already_processed or force_reextract:
+            try:
+                import extract_msg, tempfile
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".msg") as tmp:
+                    tmp.write(sq_file.read())
+                    tmp_path = tmp.name
+                msg = extract_msg.Message(tmp_path)
+                os.unlink(tmp_path)
+                sq_rows = parse_square_email(msg.body, beer_lookup)
+                if sq_rows:
+                    # Remove any existing Square rows and replace
+                    all_rows = [r for r in all_rows if r["source"] != "Tap Room (Square)"]
+                    all_rows.extend(sq_rows)
+                    st.session_state[rows_key] = all_rows
+                    st.session_state[sq_marker_key] = sq_identity
+                    st.success(f"✅ Extracted {len(sq_rows)} line items from Square report.")
+                else:
+                    st.warning("No Nomad/Gweilo beer items found in this email.")
+            except Exception as e:
+                st.error(f"Could not parse Square email: {e}")
+        else:
+            st.caption("✓ Already extracted from this file. Your edits below are preserved on every page interaction.")
 
     st.markdown("---")
 
@@ -1919,19 +1932,32 @@ elif page == "🧾 Excise Return":
     xero_file = st.file_uploader("Xero .xls / .xlsx file",
                                   type=["xls","xlsx"], key=f"xero_{period_key}")
     if xero_file:
-        try:
-            engine = "xlrd" if xero_file.name.endswith(".xls") else "openpyxl"
-            df_raw = pd.read_excel(xero_file, engine=engine, header=None)
-            xero_rows = parse_xero_report(df_raw, beer_lookup)
-            if xero_rows:
-                all_rows = [r for r in all_rows if r["source"] != "Wholesale (Xero)"]
-                all_rows.extend(xero_rows)
-                st.session_state[rows_key] = all_rows
-                st.success(f"✅ Extracted {len(xero_rows)} line items from Xero report.")
-            else:
-                st.warning("No beer items found in this Xero report.")
-        except Exception as e:
-            st.error(f"Could not parse Xero file: {e}")
+        xero_identity = f"{xero_file.name}:{xero_file.size}"
+        xero_marker_key = f"xero_processed_{period_key}"
+        already_processed = st.session_state.get(xero_marker_key) == xero_identity
+        force_reextract = st.button(
+            "🔄 Re-extract from this file",
+            key=f"xero_reextract_{period_key}",
+            disabled=not already_processed,
+            help="The file is already loaded — use this if you've added/renamed beers and want fresh fuzzy-matching. This will overwrite any manual edits made to Xero rows.",
+        )
+        if not already_processed or force_reextract:
+            try:
+                engine = "xlrd" if xero_file.name.endswith(".xls") else "openpyxl"
+                df_raw = pd.read_excel(xero_file, engine=engine, header=None)
+                xero_rows = parse_xero_report(df_raw, beer_lookup)
+                if xero_rows:
+                    all_rows = [r for r in all_rows if r["source"] != "Wholesale (Xero)"]
+                    all_rows.extend(xero_rows)
+                    st.session_state[rows_key] = all_rows
+                    st.session_state[xero_marker_key] = xero_identity
+                    st.success(f"✅ Extracted {len(xero_rows)} line items from Xero report.")
+                else:
+                    st.warning("No beer items found in this Xero report.")
+            except Exception as e:
+                st.error(f"Could not parse Xero file: {e}")
+        else:
+            st.caption("✓ Already extracted from this file. Your edits below are preserved on every page interaction.")
 
     st.markdown("---")
 
@@ -1963,10 +1989,11 @@ elif page == "🧾 Excise Return":
         for row in list(all_rows):
             rid = row["row_id"]
             conf_color = "🟢" if row["match_score"] >= 0.75 else ("🟡" if row["match_score"] >= 0.50 else "🔴")
+            manual_tag = "  ✍️ manually assigned" if row.get("manually_assigned") else ""
             with st.expander(
                 f"{conf_color} {row['source_name']}  |  {row['serve']}  "
                 f"|  qty={row['qty']}  |  {row['total_litres']:.3f} L  "
-                f"|  → {row['beer_name'] or '⚠️ UNMATCHED'}",
+                f"|  → {row['beer_name'] or '⚠️ UNMATCHED'}{manual_tag}",
                 expanded=(row["beer_name"] is None or row["match_score"] < 0.6)
             ):
                 c1, c2, c3, c4 = st.columns([2,1,1,1])
@@ -1990,6 +2017,12 @@ elif page == "🧾 Excise Return":
 
                 # Apply edits live
                 resolved_beer = new_beer if new_beer != "— unmatched —" else None
+                if resolved_beer != row.get("beer_name"):
+                    # The person changed the assignment via this dropdown — treat
+                    # that as a confident, manually-resolved match (or a deliberate
+                    # un-match), rather than leaving the old auto-match score/color.
+                    row["match_score"] = 1.0 if resolved_beer else 0.0
+                    row["manually_assigned"] = bool(resolved_beer)
                 row["beer_name"]    = resolved_beer
                 row["qty"]          = new_qty
                 row["litres_each"]  = new_le
