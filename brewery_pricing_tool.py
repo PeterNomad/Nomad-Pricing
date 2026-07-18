@@ -589,6 +589,7 @@ def parse_square_email(body_text, beer_lookup):
                 litres_each = 0
 
             results.append({
+                "row_id": uuid.uuid4().hex,
                 "source": "Tap Room (Square)",
                 "source_name": current_parent,
                 "serve": name,
@@ -667,6 +668,7 @@ def parse_xero_report(df_raw, beer_lookup):
             litres_each = can_size * cpc
 
         results.append({
+            "row_id": uuid.uuid4().hex,
             "source": "Wholesale (Xero)",
             "source_name": item,
             "serve": "Case" if pkg_type == "can" else f"Keg {keg_l or 50}L",
@@ -1947,8 +1949,19 @@ elif page == "🧾 Excise Return":
 
     # Show editable table of all rows
     if all_rows:
+        # Backfill a stable row_id for rows created before this field existed,
+        # so widget keys below are never based on list position.
+        changed = False
+        for r in all_rows:
+            if "row_id" not in r:
+                r["row_id"] = uuid.uuid4().hex
+                changed = True
+        if changed:
+            st.session_state[rows_key] = all_rows
+
         st.markdown("**Current entries** — edit beer assignment, quantities or litres, or delete rows:")
-        for idx, row in enumerate(list(all_rows)):
+        for row in list(all_rows):
+            rid = row["row_id"]
             conf_color = "🟢" if row["match_score"] >= 0.75 else ("🟡" if row["match_score"] >= 0.50 else "🔴")
             with st.expander(
                 f"{conf_color} {row['source_name']}  |  {row['serve']}  "
@@ -1962,27 +1975,27 @@ elif page == "🧾 Excise Return":
                     ["— unmatched —"] + beer_names_list,
                     index=(beer_names_list.index(row["beer_name"]) + 1
                            if row["beer_name"] in beer_names_list else 0),
-                    key=f"eb_{period_key}_{idx}"
+                    key=f"eb_{period_key}_{rid}"
                 )
                 new_qty = c2.number_input("Qty", value=int(row["qty"]),
                                           min_value=0, step=1,
-                                          key=f"eq_{period_key}_{idx}")
+                                          key=f"eq_{period_key}_{rid}")
                 new_le  = c3.number_input("Litres each", value=float(row["litres_each"]),
                                           min_value=0.0, step=0.001, format="%.4f",
-                                          key=f"el_{period_key}_{idx}")
-                if c4.button("🗑️", key=f"ed_{period_key}_{idx}", help="Delete this row"):
-                    all_rows.pop(idx)
+                                          key=f"el_{period_key}_{rid}")
+                if c4.button("🗑️", key=f"ed_{period_key}_{rid}", help="Delete this row"):
+                    all_rows[:] = [r for r in all_rows if r["row_id"] != rid]
                     st.session_state[rows_key] = all_rows
                     st.rerun()
 
                 # Apply edits live
                 resolved_beer = new_beer if new_beer != "— unmatched —" else None
-                all_rows[idx]["beer_name"]    = resolved_beer
-                all_rows[idx]["qty"]          = new_qty
-                all_rows[idx]["litres_each"]  = new_le
-                all_rows[idx]["total_litres"] = round(new_qty * new_le, 4)
+                row["beer_name"]    = resolved_beer
+                row["qty"]          = new_qty
+                row["litres_each"]  = new_le
+                row["total_litres"] = round(new_qty * new_le, 4)
                 if resolved_beer and resolved_beer in beer_lookup:
-                    all_rows[idx]["abv"] = beer_lookup[resolved_beer]["abv"]
+                    row["abv"] = beer_lookup[resolved_beer]["abv"]
                 st.session_state[rows_key] = all_rows
 
     # Add manual row
@@ -2000,6 +2013,7 @@ elif page == "🧾 Excise Return":
                 pkg_type = "keg" if "keg" in man_serve.lower() else "can"
                 abv = beer_lookup.get(man_beer, {}).get("abv", None)
                 all_rows.append({
+                    "row_id": uuid.uuid4().hex,
                     "source": man_src,
                     "source_name": f"Manual: {man_beer}",
                     "serve": man_serve,
