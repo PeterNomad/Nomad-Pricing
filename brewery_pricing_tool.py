@@ -238,9 +238,9 @@ def github_get_file_cached(filename):
     return github_get_file(filename)
 
 def github_put_file(filename, content_str, message):
-    """Create or update a file at the repo root. Returns True on success."""
+    """Create or update a file at the repo root. Returns True on success, or an error string."""
     if not GITHUB_ENABLED:
-        return False
+        return "GitHub sync is not configured (missing GITHUB_REPO/GITHUB_TOKEN secret)."
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
     _, sha = github_get_file(filename)   # always fetch a fresh sha, never the cached one
     payload = {
@@ -252,12 +252,19 @@ def github_put_file(filename, content_str, message):
         payload["sha"] = sha
     try:
         resp = requests.put(url, headers=_gh_headers(), json=payload, timeout=10)
-        ok = resp.status_code in (200, 201)
-        if ok:
+        if resp.status_code in (200, 201):
             github_get_file_cached.clear()
-        return ok
-    except Exception:
-        return False
+            return True
+        # Surface the actual reason so failures are diagnosable instead of a bare "failed"
+        try:
+            detail = resp.json().get("message", resp.text[:200])
+        except Exception:
+            detail = resp.text[:200]
+        return f"GitHub returned {resp.status_code}: {detail}"
+    except requests.exceptions.Timeout:
+        return "GitHub request timed out (network issue, not a code problem)."
+    except Exception as e:
+        return f"Request error: {e}"
 
 def _ep_to_json(ep):
     return {d: {"|".join(k): v for k, v in rates.items()} for d, rates in ep.items()}
@@ -302,10 +309,11 @@ def save_settings(gi, beers):
     except Exception as e:
         return str(e)
     if GITHUB_ENABLED:
-        ok1 = github_put_file("brewery_settings.json", settings_json, "Update brewery_settings.json via app")
-        ok2 = github_put_file("brewery_beers.json",     beers_json,    "Update brewery_beers.json via app")
-        if not (ok1 and ok2):
-            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+        r1 = github_put_file("brewery_settings.json", settings_json, "Update brewery_settings.json via app")
+        r2 = github_put_file("brewery_beers.json",     beers_json,    "Update brewery_beers.json via app")
+        if r1 is not True or r2 is not True:
+            detail = r1 if r1 is not True else r2
+            return f"Saved locally, but GitHub sync failed — {detail}"
     return True
 
 def load_settings():
@@ -465,28 +473,43 @@ else:
 # ─────────────────────────────────────────────────────────────────────────────
 
 EXCISE_HISTORY_FILE = os.path.join(BASE_DIR, "brewery_excise_history.json")
+EXCISE_HISTORY_SESSION_KEY = "excise_history_session_cache"
 
 def load_excise_history():
+    # Prefer this session's own cache first. It's populated below and kept in
+    # sync with every save (even ones where the GitHub push failed) — a stale
+    # GitHub read should never make data you just saved this session vanish
+    # from the UI.
+    if EXCISE_HISTORY_SESSION_KEY in st.session_state:
+        return st.session_state[EXCISE_HISTORY_SESSION_KEY]
+    history = None
     if GITHUB_ENABLED:
         raw, _ = github_get_file_cached("brewery_excise_history.json")
         if raw:
-            try: return json.loads(raw)
-            except Exception: pass
-    if os.path.exists(EXCISE_HISTORY_FILE):
+            try: history = json.loads(raw)
+            except Exception: history = None
+    if history is None and os.path.exists(EXCISE_HISTORY_FILE):
         try:
-            with open(EXCISE_HISTORY_FILE) as f: return json.load(f)
-        except Exception: pass
-    return []
+            with open(EXCISE_HISTORY_FILE) as f: history = json.load(f)
+        except Exception: history = None
+    history = history or []
+    st.session_state[EXCISE_HISTORY_SESSION_KEY] = history
+    return history
 
 def save_excise_history(history):
     content = json.dumps(history, indent=2)
+    # Update the session's own cache immediately — this is the data the user
+    # just created, and it should be visible in the UI whether or not the
+    # GitHub push below succeeds.
+    st.session_state[EXCISE_HISTORY_SESSION_KEY] = history
     try:
         with open(EXCISE_HISTORY_FILE, "w") as f: f.write(content)
     except Exception as e:
         return str(e)
     if GITHUB_ENABLED:
-        if not github_put_file("brewery_excise_history.json", content, "Update brewery_excise_history.json via app"):
-            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+        gh_result = github_put_file("brewery_excise_history.json", content, "Update brewery_excise_history.json via app")
+        if gh_result is not True:
+            return f"Saved locally, but GitHub sync failed — {gh_result}"
     return True
 
 def normalise_beer_name(name):
@@ -731,50 +754,68 @@ def _case_field(cans_per_case):
     """Field name for a case size, e.g. 16 -> 'cases_16', 24 -> 'cases_24'."""
     return f"cases_{int(cans_per_case)}"
 
+BATCHES_SESSION_KEY = "batches_session_cache"
+
 def load_batches():
+    if BATCHES_SESSION_KEY in st.session_state:
+        return st.session_state[BATCHES_SESSION_KEY]
+    data = None
     if GITHUB_ENABLED:
         raw, _ = github_get_file_cached("brewery_batches.json")
         if raw:
-            try: return json.loads(raw)
-            except Exception: pass
-    if os.path.exists(BATCHES_FILE):
+            try: data = json.loads(raw)
+            except Exception: data = None
+    if data is None and os.path.exists(BATCHES_FILE):
         try:
-            with open(BATCHES_FILE) as f: return json.load(f)
-        except Exception: pass
-    return []
+            with open(BATCHES_FILE) as f: data = json.load(f)
+        except Exception: data = None
+    data = data or []
+    st.session_state[BATCHES_SESSION_KEY] = data
+    return data
 
 def save_batches(batches):
     content = json.dumps(batches, indent=2)
+    st.session_state[BATCHES_SESSION_KEY] = batches
     try:
         with open(BATCHES_FILE, "w") as f: f.write(content)
     except Exception as e:
         return str(e)
     if GITHUB_ENABLED:
-        if not github_put_file("brewery_batches.json", content, "Update brewery_batches.json via app"):
-            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+        gh_result = github_put_file("brewery_batches.json", content, "Update brewery_batches.json via app")
+        if gh_result is not True:
+            return f"Saved locally, but GitHub sync failed — {gh_result}"
     return True
 
+STOCKTAKES_SESSION_KEY = "stocktakes_session_cache"
+
 def load_stocktakes():
+    if STOCKTAKES_SESSION_KEY in st.session_state:
+        return st.session_state[STOCKTAKES_SESSION_KEY]
+    data = None
     if GITHUB_ENABLED:
         raw, _ = github_get_file_cached("brewery_stocktakes.json")
         if raw:
-            try: return json.loads(raw)
-            except Exception: pass
-    if os.path.exists(STOCKTAKES_FILE):
+            try: data = json.loads(raw)
+            except Exception: data = None
+    if data is None and os.path.exists(STOCKTAKES_FILE):
         try:
-            with open(STOCKTAKES_FILE) as f: return json.load(f)
-        except Exception: pass
-    return []
+            with open(STOCKTAKES_FILE) as f: data = json.load(f)
+        except Exception: data = None
+    data = data or []
+    st.session_state[STOCKTAKES_SESSION_KEY] = data
+    return data
 
 def save_stocktakes(stocktakes):
     content = json.dumps(stocktakes, indent=2)
+    st.session_state[STOCKTAKES_SESSION_KEY] = stocktakes
     try:
         with open(STOCKTAKES_FILE, "w") as f: f.write(content)
     except Exception as e:
         return str(e)
     if GITHUB_ENABLED:
-        if not github_put_file("brewery_stocktakes.json", content, "Update brewery_stocktakes.json via app"):
-            return "Saved locally, but GitHub sync failed — check GITHUB_REPO/GITHUB_TOKEN in secrets."
+        gh_result = github_put_file("brewery_stocktakes.json", content, "Update brewery_stocktakes.json via app")
+        if gh_result is not True:
+            return f"Saved locally, but GitHub sync failed — {gh_result}"
     return True
 
 
@@ -2131,9 +2172,32 @@ elif page == "🧾 Excise Return":
             })
             result = save_excise_history(history)
             if result is True:
+                st.session_state.pop("excise_sync_pending", None)
                 st.success(f"✅ Saved excise return for {period_label}.")
             else:
+                # Keep this visible beyond the current rerun — a plain st.error
+                # here disappears the moment anything else on the page is
+                # clicked, which is exactly how the June save went unnoticed.
+                st.session_state["excise_sync_pending"] = {"period_label": period_label, "error": str(result)}
                 st.error(f"Save issue: {result}")
+
+        pending = st.session_state.get("excise_sync_pending")
+        if pending:
+            st.warning(
+                f"⚠️ **'{pending['period_label']}' has NOT synced to GitHub yet** "
+                f"({pending['error']}). It's visible in this session but will be "
+                f"**lost if the app restarts or you close this session** before it syncs. "
+                f"Retry below rather than assuming it's safe."
+            )
+            if st.button("🔁 Retry GitHub Sync Now", key="retry_excise_sync"):
+                retry_result = save_excise_history(st.session_state[EXCISE_HISTORY_SESSION_KEY])
+                if retry_result is True:
+                    st.session_state.pop("excise_sync_pending", None)
+                    st.success("✅ Synced to GitHub.")
+                    st.rerun()
+                else:
+                    st.session_state["excise_sync_pending"]["error"] = str(retry_result)
+                    st.error(f"Still failing: {retry_result}")
 
         # CSV download of detail rows
         detail_df = pd.DataFrame(matched_rows)[
@@ -2192,6 +2256,13 @@ elif page == "🧾 Excise Return":
 elif page == "📦 Batches & Stocktake":
     st.title("📦 Batches & Stocktake")
     st.caption("Record each completed brew, and periodically true up stock levels with a physical count.")
+
+    if st.session_state.get("batch_save_error"):
+        st.error(f"A recent change saved locally but the GitHub sync failed: "
+                 f"{st.session_state['batch_save_error']}")
+        if st.button("Dismiss", key="dismiss_batch_save_error"):
+            st.session_state.pop("batch_save_error", None)
+            st.rerun()
 
     all_beer_names = sorted(set(b["name"] for b in st.session_state.beers))
     beer_can_size  = {b["name"]: b.get("can_size_l", 0.375) for b in st.session_state.beers}
@@ -2369,25 +2440,29 @@ elif page == "📦 Batches & Stocktake":
                                             bb[_case_field(csize)] = edit_cases[csize]
                                         for size in KEG_SIZES:
                                             bb[_keg_field(size)] = edit_kegs[size]
+                                st_save_result = True
                                 if new_bid != bid:
                                     # keep linked stocktakes pointing at the right batch
                                     for st_rec in stocktakes:
                                         if st_rec.get("batch_id") == bid:
                                             st_rec["batch_id"] = new_bid
-                                    save_stocktakes(stocktakes)
+                                    st_save_result = save_stocktakes(stocktakes)
                                 result = save_batches(batches)
-                                if result is True:
+                                if result is True and st_save_result is True:
                                     st.success("Batch updated.")
                                     st.rerun()
                                 else:
-                                    st.error(f"Save issue: {result}")
+                                    detail = result if result is not True else st_save_result
+                                    st.error(f"Save issue: {detail}")
 
                     c1, c2 = st.columns(2)
                     if c1.button("🗄️ Archive batch (no longer in stock)", key=f"arch_{bid}"):
                         for bb in batches:
                             if bb["batch_id"] == bid:
                                 bb["archived"] = True
-                        save_batches(batches)
+                        result = save_batches(batches)
+                        if result is not True:
+                            st.session_state["batch_save_error"] = str(result)
                         st.rerun()
                     if c2.button("🗑️ Delete batch permanently", key=f"delbtn_{bid}"):
                         st.session_state[f"confirm_delbatch_{bid}"] = True
@@ -2400,8 +2475,10 @@ elif page == "📦 Batches & Stocktake":
                         if confirmed_b:
                             batches[:]    = [bb for bb in batches if bb["batch_id"] != bid]
                             stocktakes[:] = [s for s in stocktakes if s.get("batch_id") != bid]
-                            save_batches(batches)
-                            save_stocktakes(stocktakes)
+                            r1 = save_batches(batches)
+                            r2 = save_stocktakes(stocktakes)
+                            if r1 is not True or r2 is not True:
+                                st.session_state["batch_save_error"] = str(r1 if r1 is not True else r2)
                             st.session_state.pop(f"confirm_delbatch_{bid}", None)
                             st.success("Batch deleted.")
                             st.rerun()
@@ -2560,7 +2637,9 @@ elif page == "📦 Batches & Stocktake":
                     )
                     if confirmed_s:
                         stocktakes[:] = [s for s in stocktakes if s is not srec]
-                        save_stocktakes(stocktakes)
+                        result = save_stocktakes(stocktakes)
+                        if result is not True:
+                            st.session_state["batch_save_error"] = str(result)
                         st.session_state.pop(f"confirm_delst_{uid}", None)
                         st.success("Stocktake deleted.")
                         st.rerun()
