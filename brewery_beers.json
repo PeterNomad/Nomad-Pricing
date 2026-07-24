@@ -478,5 +478,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.0,
     "active": true
+  },
+  {
+    "name": "Finger Lime IPA",
+    "abv": 0.069,
+    "batch_size_l": 2300,
+    "can_size_l": 0.375,
+    "proportion_cans": 0.15,
+    "proportion_kegs": 0.85,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": true,
+    "raw_materials": 2499.5,
+    "base_margin": 0.37,
+    "royalty_pct": 0.0,
+    "active": true
   }
 ]
