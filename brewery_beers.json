@@ -463,5 +463,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.1,
     "active": true
+  },
+  {
+    "name": "Hefeweizen",
+    "abv": 0.048,
+    "batch_size_l": 2500,
+    "can_size_l": 0.375,
+    "proportion_cans": 0.15,
+    "proportion_kegs": 0.85,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": false,
+    "raw_materials": 1833.21,
+    "base_margin": 0.37,
+    "royalty_pct": 0.0,
+    "active": true
   }
 ]
