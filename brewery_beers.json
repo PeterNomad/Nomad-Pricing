@@ -508,5 +508,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.1,
     "active": true
+  },
+  {
+    "name": "Gweilo Sniko Stout",
+    "abv": 0.053,
+    "batch_size_l": 2100,
+    "can_size_l": 0.44,
+    "proportion_cans": 0.75,
+    "proportion_kegs": 0.25,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": false,
+    "raw_materials": 2733.31,
+    "base_margin": 0.37,
+    "royalty_pct": 0.1,
+    "active": true
   }
 ]
