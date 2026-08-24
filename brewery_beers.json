@@ -498,7 +498,7 @@
     "name": "Jasmine Lager",
     "abv": 0.04,
     "batch_size_l": 5200,
-    "can_size_l": 0.44,
+    "can_size_l": 0.375,
     "proportion_cans": 0.75,
     "proportion_kegs": 0.25,
     "cans_per_case": 16,
