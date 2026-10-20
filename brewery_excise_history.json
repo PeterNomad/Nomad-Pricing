@@ -8958,7 +8958,7 @@
   {
     "period_key": "2026-09",
     "period_label": "September 2026",
-    "saved_at": "2026-10-18 02:34",
+    "saved_at": "2026-10-20 05:54",
     "buckets": {
       "can|lte35": 0.37279,
       "can|gt35": 290.0489924999999,
@@ -8967,7 +8967,7 @@
     },
     "rows": [
       {
-        "row_id": "22958b4823a44d7fa5d7cbf7942217b8",
+        "row_id": "dc4e0876b71c48898e98ddfd453cdb72",
         "source": "Tap Room (Square)",
         "source_name": "Gweilo - Limited release - Can",
         "serve": "4-Pack",
@@ -8981,11 +8981,11 @@
         "manually_assigned": true
       },
       {
-        "row_id": "0701d0584f9f495ab012230d139356dc",
+        "row_id": "67bd96cd31e74bdfbdaa8c92b8c728fb",
         "source": "Tap Room (Square)",
         "source_name": "Gweilo - Limited release - Can",
         "serve": "Single",
-        "beer_name": "Gweilo Rasberry Waffle",
+        "beer_name": "Gweilo Raspberry Waffle",
         "match_score": 1.0,
         "package_type": "can",
         "qty": 11,
@@ -8995,7 +8995,7 @@
         "manually_assigned": true
       },
       {
-        "row_id": "7804c1fb49ad4ec9a39adb0922b67c43",
+        "row_id": "1d15314992644e848556c93439bd7a9a",
         "source": "Tap Room (Square)",
         "source_name": "Gweilo - Rainbow Sherbet - Can",
         "serve": "4-Pack",
@@ -9008,7 +9008,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "b234a14d2d6f48848ddff8814cd786d7",
+        "row_id": "861ec92ac15c4bc3bd2879f17b7c9f9a",
         "source": "Tap Room (Square)",
         "source_name": "Gweilo - Rainbow Sherbet - Can",
         "serve": "Single",
@@ -9021,7 +9021,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "3512e31e70af4c11a59ced5e1fb687dc",
+        "row_id": "028fc2b27acd4dd6964754651399f051",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Anton's Amber Vienna Lager - Can",
         "serve": "4-Pack",
@@ -9034,7 +9034,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "c3fbe494fd4d4c2292499149263b5fac",
+        "row_id": "3bb94fa3db244be5869479cde5bdd377",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Anton's Amber Vienna Lager - Keg",
         "serve": "Jug - 1140mL",
@@ -9047,7 +9047,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "18eaa38e3a2048f8982b4a2f427aa046",
+        "row_id": "55307b064da34e5b8987c06d8fbdeed4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Anton's Amber Vienna Lager - Keg",
         "serve": "Middy - 285mL",
@@ -9060,7 +9060,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "419e5a2c5da24ab6976fb57849165de2",
+        "row_id": "99b68f70f8a447a6a98643d88fa5d24f",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Anton's Amber Vienna Lager - Keg",
         "serve": "Pint - 570mL",
@@ -9073,7 +9073,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "0881aec443764cbe8c84c7e9f4fb10d2",
+        "row_id": "7c149c8d54634db8977979a40672ceee",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Anton's Amber Vienna Lager - Keg",
         "serve": "Schooner - 425mL",
@@ -9086,7 +9086,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "0803edd8272e4293963aea82974a3f3d",
+        "row_id": "690d808bfd044e82aebb6539ea990b0b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Beachcomber Pale - Can",
         "serve": "4-Pack",
@@ -9099,7 +9099,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "eca33312b9ff41ec9c5ce92a879c0a86",
+        "row_id": "6e9b0d553e734c6d9dec33bb1ea3648d",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Beachcomber Pale - Can",
         "serve": "Single",
@@ -9112,7 +9112,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "56d5261fc5f142cd9bc477b3e341db51",
+        "row_id": "5fe09c5ecd6d476088cecc137266d3d4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Beachcomber Pale - Keg",
         "serve": "Middy - 285mL",
@@ -9125,7 +9125,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "b24b95a18dec47dea80fc42b9212bd71",
+        "row_id": "ae904304c48745ecafaf30687a3fb99e",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Beachcomber Pale - Keg",
         "serve": "Schooner - 425mL",
@@ -9138,7 +9138,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "53170175fb5342999cfefffde075508f",
+        "row_id": "fbdff11d094549658e9d3398c20f1a2b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Can",
         "serve": "4-Pack",
@@ -9151,7 +9151,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "b4bb6cc956f2471fb0898849278f4eb6",
+        "row_id": "babe9001838343e2ab99c21f57fb2d84",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Keg",
         "serve": "Happy Hour Schooner",
@@ -9164,7 +9164,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "c516a222b230436c94333386f0bebac0",
+        "row_id": "cb1d27b658fe4793acf8826ba92d694b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Keg",
         "serve": "Jug - 1140mL",
@@ -9177,7 +9177,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "e52059c9d6994b04840e437f7856c046",
+        "row_id": "f30f8f3974304731be1af174829f6a5b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Keg",
         "serve": "Middy - 285mL",
@@ -9190,7 +9190,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "b470cbd1a9624213ac8ca95dfdef6d39",
+        "row_id": "6ad6c1d56f2c46a8a5e4a2c57cecfff5",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Keg",
         "serve": "Pint - 570mL",
@@ -9203,7 +9203,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "41d6509b0f3248589ecda77d048748da",
+        "row_id": "8e750234a8dc498b8e66703f48840496",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Coastal Mid-Strength - Keg",
         "serve": "Schooner - 425mL",
@@ -9216,7 +9216,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "f6b5ef10d8a94cb388097452ad63713b",
+        "row_id": "eacb9b3a331b4f75b18b56c45f9ca01f",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Can",
         "serve": "4-Pack",
@@ -9229,7 +9229,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "1ac4a3513b204b32ba38370fcb1780f9",
+        "row_id": "953b358efd09457bb370b23c70c1ea6e",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Can",
         "serve": "Case",
@@ -9242,7 +9242,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "f7bd8774c7a14eb2b0f4ccf244fea269",
+        "row_id": "027bf3546399472885c35e38b0146dd5",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Can",
         "serve": "Single",
@@ -9255,7 +9255,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "59a8c8e139bd48659d7186ca752a99bf",
+        "row_id": "afc3f1f5e6ef47288c505df345075174",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Keg",
         "serve": "Happy Hour Schooner",
@@ -9268,7 +9268,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "17e9c385168f455593483c3911c5bb7c",
+        "row_id": "4d24e41fd48249ef88f03f806746d1cc",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Keg",
         "serve": "Jug - 1140mL",
@@ -9281,7 +9281,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "a9900a0c472f4a4baf927ee15a10c7c4",
+        "row_id": "e0b007d5991a465cbd2dab1be28afa17",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Keg",
         "serve": "Middy - 285mL",
@@ -9294,7 +9294,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "25b86438020943a5a6fd063363d7fa10",
+        "row_id": "0948e22b9f5e49a79d7709c776b24ed4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Keg",
         "serve": "Pint - 570mL",
@@ -9307,7 +9307,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "fc0043fb8cba49499cb5ae0e2aa716f8",
+        "row_id": "5931b038e6e4459e97c4f2d35b2e7ab2",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Endless Summer XPA - Keg",
         "serve": "Schooner - 425mL",
@@ -9320,7 +9320,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "4267a3e98c3f4e009474c816b0759cdd",
+        "row_id": "e202e0c2f64144ed9a61f1d69a632eea",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Espresso Stout - Can",
         "serve": "4-Pack",
@@ -9333,7 +9333,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "65c7cdd44e034d0696e7947f175ca7cd",
+        "row_id": "c7a58ec2819d42c2aba431d73cf01271",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Espresso Stout - Can",
         "serve": "Case",
@@ -9346,7 +9346,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "4761430bed7149c5a813be00b884f3f2",
+        "row_id": "e488a59286f644ebb474b9e1fed0cdd1",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Espresso Stout - Can",
         "serve": "Single",
@@ -9359,7 +9359,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "39ba21fe8b8f4cbda440aae6ac56e16f",
+        "row_id": "5aa86b63dac24caa8078b21943e2d324",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Espresso Stout - Keg",
         "serve": "Middy - 285mL",
@@ -9372,7 +9372,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "ba23072410df4f7a83b6ffab02ce9bc0",
+        "row_id": "251762e66b5349f8a8e563dd25de5463",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Espresso Stout - Keg",
         "serve": "Schooner - 425mL",
@@ -9385,7 +9385,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "1a71b2729cad4a48896d576a8b6505cc",
+        "row_id": "a0af2d58c2564d3eab2e4df72780e7b7",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Can",
         "serve": "4-Pack",
@@ -9398,7 +9398,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "45890c1b3ba84d95b8463869ab3d268b",
+        "row_id": "bb637b5e018e428186dd5f93ad239651",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Can",
         "serve": "Case",
@@ -9411,7 +9411,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "30bf9fe2f0fd48cc9032276868f87342",
+        "row_id": "116c2ec2284946a8a21dc3d9b2e922d4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Keg",
         "serve": "Jug - 1140mL",
@@ -9424,7 +9424,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "d8536e7b5cdf42188f2708ee6c631208",
+        "row_id": "97bcd32ad15742d38dbc1f2741025a43",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Keg",
         "serve": "Middy - 285mL",
@@ -9437,7 +9437,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "bcbbc393db5446799b5365ffab93c2ba",
+        "row_id": "546f09d28c5a4ff395f56bb1b8382d0e",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Keg",
         "serve": "Pint - 570mL",
@@ -9450,7 +9450,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "8578faa5ea0e4c2ea2791d1ae6701f9c",
+        "row_id": "b6e0fac75ad84c649077d0c17b064cb9",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Good Shepherd NZ Pils - Keg",
         "serve": "Schooner - 425mL",
@@ -9463,7 +9463,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "e7284af2aba44a23ac9689cbcbfb3f02",
+        "row_id": "c25d3e241bb3431a8ca9ab999d2c68f1",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Hop Symphony Ale - Can",
         "serve": "4-Pack",
@@ -9476,7 +9476,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "9f0bac43f0a445ae8ec16536a064a474",
+        "row_id": "2e3c060e693d4175bdc2433f70ecb0fa",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Hop Symphony Ale - Keg",
         "serve": "Happy Hour Schooner",
@@ -9489,7 +9489,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "0bb3f00417504abaa7c2486f57307c8c",
+        "row_id": "3e54d30df64345638c2bb141de34da69",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Hop Symphony Ale - Keg",
         "serve": "Middy - 285mL",
@@ -9502,7 +9502,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "dc7daa4f01dd4f1aa45458f11a827c98",
+        "row_id": "f99b7541440c4418abe158b7dd5f7760",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Hop Symphony Ale - Keg",
         "serve": "Pint - 570mL",
@@ -9515,7 +9515,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "fd6e713d7cbe43bdb315ac5a1f51cc4a",
+        "row_id": "b3b7d881977e48758b33f20eda6c8853",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Hop Symphony Ale - Keg",
         "serve": "Schooner - 425mL",
@@ -9528,7 +9528,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "6bf992bdb53240569ccac5bc5f0d13dd",
+        "row_id": "fd9c2931402046e28092749564b60c16",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Can",
         "serve": "4-Pack",
@@ -9541,7 +9541,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "2d34c5e7b329471181c23323d86d4f8e",
+        "row_id": "9ef596f47db8484c8fe8afbde425fac6",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Can",
         "serve": "Single",
@@ -9554,7 +9554,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "71cb517a554241228c5ec832cd9e5ee0",
+        "row_id": "42e22504e9594be385078d3e700c7628",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Keg",
         "serve": "Growler - 1900mL",
@@ -9567,7 +9567,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "48a16e79d90c417b8a900eb61c249bb0",
+        "row_id": "bedfbe7d275344d595058d87c0d878d4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Keg",
         "serve": "Jug - 1140mL",
@@ -9580,7 +9580,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "57e6da907d9747d0942d4ff13b1f74ad",
+        "row_id": "de80c7beccf840afbf7b6a570df77fec",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Keg",
         "serve": "Middy - 285mL",
@@ -9593,7 +9593,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "6f0053ad159945cd801be66550ff5f4d",
+        "row_id": "e0fbc856af334bcfa7b8b11d1efc8891",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Monsoon IPA - Keg",
         "serve": "Schooner - 425mL",
@@ -9606,7 +9606,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "281174c0cc4b452fbe9c2629cbc82da8",
+        "row_id": "5bbd4906766e4bc3ac8c95462f22fc3a",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Nutcracker Session Stout - Can",
         "serve": "Single",
@@ -9619,7 +9619,7 @@
         "abv": 0.032
       },
       {
-        "row_id": "17714ba5e07e4814ab16c6cb66be9565",
+        "row_id": "a3765f654f634604a7fa42b074f671b6",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Nutcracker Session Stout - Keg",
         "serve": "Happy Hour Schooner",
@@ -9632,7 +9632,7 @@
         "abv": 0.032
       },
       {
-        "row_id": "f2dacc7288244c02bdb65096d09a975a",
+        "row_id": "f0826c9302e8423e8cbcb0d975459b93",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Nutcracker Session Stout - Keg",
         "serve": "Middy - 285mL",
@@ -9645,7 +9645,7 @@
         "abv": 0.032
       },
       {
-        "row_id": "2dbf660bd6914a07896fc341e0187ae8",
+        "row_id": "2bb3b12f8dc7466d878603bcdebcee07",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Nutcracker Session Stout - Keg",
         "serve": "Schooner - 425mL",
@@ -9658,7 +9658,7 @@
         "abv": 0.032
       },
       {
-        "row_id": "08df935ce61141d6aa14ed4b5d2d8f8b",
+        "row_id": "017eb2daed4c4b998ad6c90117207ae2",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Can",
         "serve": "4-Pack",
@@ -9671,7 +9671,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "93731b2bd13b471c9888bad4253ce20b",
+        "row_id": "10f3a87fa4d846c683dbeea46a11886c",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Can",
         "serve": "Single",
@@ -9684,7 +9684,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "59da2fc87df74720ad30db6af77bc90f",
+        "row_id": "50357fb0ccf248019ad5072943e69c84",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Keg",
         "serve": "Happy Hour Schooner",
@@ -9697,7 +9697,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "89ccb27f3a4f451091b15db3181aa5b5",
+        "row_id": "4b072a5e3b664173b1948238188de6af",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Keg",
         "serve": "Jug - 1140mL",
@@ -9710,7 +9710,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "5786a1dfda9649fdbe90935199d1146f",
+        "row_id": "650c70d15aaf48f6b075694cdaad0cce",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Keg",
         "serve": "Middy - 285mL",
@@ -9723,7 +9723,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "6795fdc221524aa3acaf9d6cd482e705",
+        "row_id": "0fa852bc90d649cb8ef3655ebf386a4f",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Keg",
         "serve": "Pint - 570mL",
@@ -9736,7 +9736,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "0b7ee7b0fc744f8fb2b97b13d2a9b9fc",
+        "row_id": "f8dd2620fa4341b286a54e329d3cac2f",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Pier 39 West Coast IPA - Keg",
         "serve": "Schooner - 425mL",
@@ -9749,7 +9749,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "c5bbe884e5014d3fb9934fef13e682a7",
+        "row_id": "136ed04707b644bdbe702426b1824148",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Can",
         "serve": "4-Pack",
@@ -9762,7 +9762,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "eae4aa3435f848e1b28b70944df730c5",
+        "row_id": "d75e78c4f7e74e20be887104f8a9da8f",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Can",
         "serve": "Case",
@@ -9775,7 +9775,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "042b1ec382ac40f8a39ec820e2e78148",
+        "row_id": "eae95c53fc554b06bf516d0b9ca658f1",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Keg",
         "serve": "Growler - 1900mL",
@@ -9788,7 +9788,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "aee71a9c61524dd09158a2476d5d9981",
+        "row_id": "1ac43e91393e485486ef50ead53f5cef",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Keg",
         "serve": "Jug - 1140mL",
@@ -9801,7 +9801,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "3f3cb4969a9247579b7c6346da3e6f05",
+        "row_id": "4c82924742b34941a5dba2fdb800d180",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Keg",
         "serve": "Middy - 285mL",
@@ -9814,7 +9814,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "6366aec1aed34a2b9fa2044d118cfc62",
+        "row_id": "e5601603e3034f129f29f3bd521ce954",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Keg",
         "serve": "Pint - 570mL",
@@ -9827,7 +9827,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "91e60cfb6ab34e3b84ebd79c3abe8943",
+        "row_id": "0cd28d2ca4b14d349d2f6e909f819e72",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Queensie Lager - Keg",
         "serve": "Schooner - 425mL",
@@ -9840,7 +9840,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "9ed0862896804b3eb4d534a8dac6ec84",
+        "row_id": "63355947412b46bd981cda21f7408375",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Saint Benedict Pilsner - Can",
         "serve": "4-Pack",
@@ -9853,7 +9853,7 @@
         "abv": 0.044
       },
       {
-        "row_id": "2846bc87ba364531ad451d0ec62a2b54",
+        "row_id": "d96fa17ae2134f178d506c334994f1a4",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Saint Benedict Pilsner - Can",
         "serve": "Single",
@@ -9866,7 +9866,7 @@
         "abv": 0.044
       },
       {
-        "row_id": "c3ce193162f24915a51e6b8ae1841119",
+        "row_id": "1f89b6295847424fb585f6b73a63d941",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Salem NEIPA - Can",
         "serve": "4-Pack",
@@ -9879,7 +9879,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "67b1210533344a46998d7d042e95b53f",
+        "row_id": "0969a8c9bb4344a587b97ed3ba66308a",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Salem NEIPA - Can",
         "serve": "Single",
@@ -9892,7 +9892,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "62bd6d693e3447f0b1c3d79fbb0406af",
+        "row_id": "34396c648c5d4485a665441b7d392b2d",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Salem NEIPA - Keg",
         "serve": "Jug - 1140mL",
@@ -9905,7 +9905,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "6f1886e8a18943c78a9d768eb37dd88f",
+        "row_id": "38df1fc14bed4b28b4648c30def9b998",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Salem NEIPA - Keg",
         "serve": "Middy - 285mL",
@@ -9918,7 +9918,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "865d4ae9ae5b484e9b25fb3df0421682",
+        "row_id": "f1ae735c440547b891af36a90d4558a0",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Salem NEIPA - Keg",
         "serve": "Schooner - 425mL",
@@ -9931,7 +9931,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "bc1466ef92cb41a89c34cfa442d895c4",
+        "row_id": "79090aa2607e417d9c67a8eddb8ec8ac",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Sorrento Sunshine Lemon Sour - Can",
         "serve": "4-Pack",
@@ -9944,7 +9944,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "3669dd92c5e64ddbae1c1820d03c5fdc",
+        "row_id": "30465898f89b490793afaf18d1772530",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Sorrento Sunshine Lemon Sour - Can",
         "serve": "Single",
@@ -9957,7 +9957,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "ba89f1f3cd8f446ea239f47121010639",
+        "row_id": "d28925ed699a4b9085150b41e5f2e6e0",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Sorrento Sunshine Lemon Sour - Keg",
         "serve": "Happy Hour Schooner",
@@ -9970,7 +9970,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "d4bd6ee0dc6b42eab23462a96e8b8fcc",
+        "row_id": "58dc25a7459c4871a5c4b780ff9e840b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Sorrento Sunshine Lemon Sour - Keg",
         "serve": "Middy - 285mL",
@@ -9983,7 +9983,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "78d63cabe14145bcb049361ffde15b1a",
+        "row_id": "48b1162bae4e4e2ab64d25cc5c63415b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Sorrento Sunshine Lemon Sour - Keg",
         "serve": "Schooner - 425mL",
@@ -9996,7 +9996,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "a9cca4ceedbf4c47a0abc93e8677cef4",
+        "row_id": "1809e1e2822c4e0aab924e0447df650b",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Can",
         "serve": "4-Pack",
@@ -10009,7 +10009,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "1393697a9f2b4d4aaa36431c8cca85b9",
+        "row_id": "dab1ab71fc1241e99101ac4f13faa97e",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Can",
         "serve": "Single",
@@ -10022,7 +10022,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "ec61d205e41a4308946d6d5d17ee0f58",
+        "row_id": "4f6d014e166c425db3ed1e7c4c111faf",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Keg",
         "serve": "Jug - 1140mL",
@@ -10035,7 +10035,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "bfcf0632d95a46458f254bb0899a42ab",
+        "row_id": "1b071c9f4a744b1e85fef266ddf940d7",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Keg",
         "serve": "Middy - 285mL",
@@ -10048,7 +10048,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "d6d43e11e9d549cd839f9ecb7fd79ec9",
+        "row_id": "5fab881e5a6a40eca29cdc01f9958321",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Keg",
         "serve": "Pint - 570mL",
@@ -10061,7 +10061,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "1c71bb1caba947bab4b95cd79a1d42d2",
+        "row_id": "2944901d09254142bad182ab12928151",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Surf Mist Hazy - Keg",
         "serve": "Schooner - 425mL",
@@ -10074,7 +10074,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "866c1432dc1c47f9860a7224eb35e76d",
+        "row_id": "2e3add43912b41bd997711ebd89950ef",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Can",
         "serve": "4-Pack",
@@ -10087,7 +10087,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "aa84f1c5bc1e4905ae5ff02243c3c861",
+        "row_id": "41705213106d4b4f9e8efad9bb428844",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Can",
         "serve": "Case",
@@ -10100,7 +10100,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "a0f04834ce79445c8a3892ca53026246",
+        "row_id": "f99296b7b0c54f7780607b94b3266ccd",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Can",
         "serve": "Single",
@@ -10113,7 +10113,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "383360cf8fe34342a64b733ca573806f",
+        "row_id": "2d8fff9d532f4d1abfdee0f36e16fb47",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Keg",
         "serve": "Middy",
@@ -10126,7 +10126,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "3cf44812bb114435ac103d9cf54ab630",
+        "row_id": "7ed9715de7e745fe8ee7c9b021223c74",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Keg",
         "serve": "Pint",
@@ -10139,7 +10139,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "ce9fdc8a0f024b92885a989f19457274",
+        "row_id": "375d3d694b8f498bace8d1a4d4b4109c",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - The Dark Side Stout - Keg",
         "serve": "Schooner",
@@ -10152,7 +10152,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "a80a6ed9e15a4508b8ba6aa2913a44ee",
+        "row_id": "d185e4f4e03d4dcfadd8b387b9c395ab",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Wanderlust Dark Lager - Can",
         "serve": "4-Pack",
@@ -10165,7 +10165,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "87c61519a4f74fc5a2917fa3a43a5b66",
+        "row_id": "51dcd2e5fda94074afa1e91eb0e0d360",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Wanderlust Dark Lager - Can",
         "serve": "Case",
@@ -10178,7 +10178,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "21df50e3b1fe4dd9911810ce1590c865",
+        "row_id": "8c2b9f94e4a143edb4fa3294a77e96e2",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Wanderlust Dark Lager - Can",
         "serve": "Single",
@@ -10191,7 +10191,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "e19251321ea0494ba265e03e6c4a5995",
+        "row_id": "2762ecc76a1848aa919c9cea8a180214",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Wanderlust Dark Lager - Can",
         "serve": "Middy - 285mL",
@@ -10204,7 +10204,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "9f913ca45b6d4cbcbf729cc17675b5d6",
+        "row_id": "e843e01251714e7885fbf08c195691c9",
         "source": "Tap Room (Square)",
         "source_name": "Nomad - Wanderlust Dark Lager - Can",
         "serve": "Schooner - 425mL",
@@ -10217,7 +10217,7 @@
         "abv": 0.042
       },
       {
-        "row_id": "97be6675897d476f998296d0d07f5203",
+        "row_id": "718692dd517c43438ff6973c49ec6f29",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet",
         "serve": "Case",
@@ -10230,7 +10230,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "6ac7a062fe0d4abbac441ef52fff57cd",
+        "row_id": "c95c1e2ea6f34ef68351d15a35aaaf13",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet",
         "serve": "Case",
@@ -10243,7 +10243,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "edaa3631835642d39c6e6ede66f92270",
+        "row_id": "fd72eb2bd06a4e698f2c74f1e9f7e72b",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet Cube",
         "serve": "Case",
@@ -10256,7 +10256,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "659ec59d98c34cb5bdb57aca6dd9c5b2",
+        "row_id": "322ae6bb71094a5f838dbaffede7b289",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Case",
         "serve": "Case",
@@ -10269,7 +10269,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "ce2910ba2e98443b916e187f3f4be351",
+        "row_id": "8dbef5aa2bd14af38e1c5f4686bb42ab",
         "source": "Wholesale (Xero)",
         "source_name": "Good Shepherd NZ Pilsner Case",
         "serve": "Case",
@@ -10282,7 +10282,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "66680ece6d8f4424b712ac63f5b9529c",
+        "row_id": "9f3674c36c2a46abaab1ea2f461d365c",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA Case",
         "serve": "Case",
@@ -10295,7 +10295,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "afca38e22e474e66aa825fd642316f4e",
+        "row_id": "aaebd621fbb54910a507f496a833ac72",
         "source": "Wholesale (Xero)",
         "source_name": "Salem New England IPA Case",
         "serve": "Case",
@@ -10308,7 +10308,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "ecc6e5f0afb543618a079734ef82ee15",
+        "row_id": "b9bb3d065eaa4a53a62e9a3d749b7649",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet Cube",
         "serve": "Case",
@@ -10321,7 +10321,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "1b609bf749094e62ac890439a471ca67",
+        "row_id": "9073692be44c4c89a2ec70c8915c7d55",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rocky Road Brownie Stout Case",
         "serve": "Case",
@@ -10334,7 +10334,7 @@
         "abv": 0.055
       },
       {
-        "row_id": "a9a5f023202543b198491fbcfd24bd6e",
+        "row_id": "6a8dc4034c394d1ab82d2075e000bb8e",
         "source": "Wholesale (Xero)",
         "source_name": "Hop Symphony 20L Keg",
         "serve": "Keg 20L",
@@ -10347,7 +10347,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "edd034c3fcbd4040aedf414452f3cbc4",
+        "row_id": "9e17525b9c3743479fce6d03e903064c",
         "source": "Wholesale (Xero)",
         "source_name": "Anton's Amber Vienna Lager 20L Keg",
         "serve": "Keg 20L",
@@ -10360,7 +10360,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "d35825e6ed3a473d974f1ca9c1b36327",
+        "row_id": "3afb292ee39e45bb8cf521b09d2ab3a2",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA 20L Keg",
         "serve": "Keg 20L",
@@ -10373,7 +10373,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "653e411bcaa342f2912ad155cb5c14d5",
+        "row_id": "7e26b152028f40ee84404278987bf765",
         "source": "Wholesale (Xero)",
         "source_name": "Endless Summer XPA 20L Keg",
         "serve": "Keg 20L",
@@ -10386,7 +10386,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "97e0e08fa2734fb5a6cb28ad664fbb82",
+        "row_id": "72847a5a35de4c68a44c2192542a30f3",
         "source": "Wholesale (Xero)",
         "source_name": "Salem NEIPA 20L Keg",
         "serve": "Keg 20L",
@@ -10399,7 +10399,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "f90a5c108ce34e4d8e0c4eeb59ef24fc",
+        "row_id": "344bf2ce28b642e988b1bff3050f8ff7",
         "source": "Wholesale (Xero)",
         "source_name": "Rest at Tarranguau Lager",
         "serve": "Case",
@@ -10413,7 +10413,7 @@
         "manually_assigned": true
       },
       {
-        "row_id": "e3643341e1b34ce48b03f8094594d3f0",
+        "row_id": "aa03870a1632496d9419fe9a1802f522",
         "source": "Wholesale (Xero)",
         "source_name": "Lord Clarkson Hazy",
         "serve": "Case",
@@ -10426,7 +10426,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "44db36e4a3f3484b92c2343b3fb53c51",
+        "row_id": "de15d7b05fe1443a94b06fc9743f06ee",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet",
         "serve": "Case",
@@ -10439,7 +10439,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "f52ddda4d13146c49e3f731f3c831321",
+        "row_id": "69da2629918848b6996a2eb280fbb6cd",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager 30L Keg",
         "serve": "Keg 30L",
@@ -10452,7 +10452,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "061c41f29742462293ae9ebb1c05b9e6",
+        "row_id": "8437c944ae3d47a2b9eecbba1dfa4093",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Case",
         "serve": "Case",
@@ -10465,7 +10465,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "b6c174361174453eb297cf742c23705f",
+        "row_id": "71a4b29be3c64f919a32ea8534a3734e",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet",
         "serve": "Case",
@@ -10478,7 +10478,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "278bdc54b8174213a485c2c58f249abc",
+        "row_id": "c79fa32161aa4096917fdb3b0210cd6b",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet Cube",
         "serve": "Case",
@@ -10491,7 +10491,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "4fbc8cfc765945a1ba075e7820afbe88",
+        "row_id": "c5817b0f39824432b10a8a5ef88ad31b",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Case",
         "serve": "Case",
@@ -10504,7 +10504,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "efbe1290649e42c88a7ac41bcc0ba877",
+        "row_id": "64a971382bce48238d8733cc26ae6aea",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Case",
         "serve": "Case",
@@ -10517,7 +10517,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "8e06754afe144f059342db8cf6747f75",
+        "row_id": "9ac2f7d0217d46ea813d91fe803e58e4",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Keg",
         "serve": "Keg 50L",
@@ -10530,7 +10530,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "8aa0eb8664ac4ebda2aa9a74bbad4bc3",
+        "row_id": "2920faa871ef44dc97d7cae5475dec76",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Case",
         "serve": "Case",
@@ -10543,7 +10543,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "462f184ce4914aa29b20a951937ae4a3",
+        "row_id": "a28924b48beb4a37a3167d260aa4059d",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Keg",
         "serve": "Keg 50L",
@@ -10556,7 +10556,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "bf2309452fbe49de9ba75437aeff4087",
+        "row_id": "1b7030d7b2ba4bf7a4e10acfca94c7d2",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Case",
         "serve": "Case",
@@ -10569,7 +10569,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "bdbdfad7748c4122a9c18cbcd5873c03",
+        "row_id": "d61aa490d76e444eb9b5edb7bc98f5a0",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Keg",
         "serve": "Keg 50L",
@@ -10582,7 +10582,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "67efbdd3ecc24b5ea23ec1475df25b43",
+        "row_id": "91af068aeb4e4533837310ee5e7da3ab",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Case",
         "serve": "Case",
@@ -10595,7 +10595,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "c68376193fb346d8aa2ffb10a9444f02",
+        "row_id": "da702368bbe648b984c7e7e6f913a574",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Keg",
         "serve": "Keg 50L",
@@ -10608,7 +10608,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "6b8a72333ef044d5b273222cbdb07dcf",
+        "row_id": "f7004eb5b64941a28424f5b9654c028b",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Keg",
         "serve": "Keg 50L",
@@ -10621,7 +10621,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "0a4bb4c467eb427b8e0c1156cb750832",
+        "row_id": "79e71fbf29b14826b5ec093a7779aa7a",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Keg",
         "serve": "Keg 50L",
@@ -10634,7 +10634,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "b080f26183b94abd8229787cd32e75ef",
+        "row_id": "8f20573a3aa244088b180647e4a6d3fd",
         "source": "Wholesale (Xero)",
         "source_name": "Anton's Amber Vienna Lager 20L Keg",
         "serve": "Keg 20L",
@@ -10647,7 +10647,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "333bdc55b04e4d8c9419778ed3a262bb",
+        "row_id": "17a47b516d9d4cdc8c21a2925c914e0c",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA 20L Keg",
         "serve": "Keg 20L",
@@ -10660,7 +10660,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "26a7333647914ae1a7f997f81e2a4670",
+        "row_id": "85c7571610124619b7efc4890cb8e7f5",
         "source": "Wholesale (Xero)",
         "source_name": "Monsoon IPA 20L Keg",
         "serve": "Keg 20L",
@@ -10673,7 +10673,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "a5ef6bbf1c2d432ba39b2f15b90bace5",
+        "row_id": "86175396a87b4b308ff7bc00ff3100cd",
         "source": "Wholesale (Xero)",
         "source_name": "Endless Summer XPA 20L Keg",
         "serve": "Keg 20L",
@@ -10686,7 +10686,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "5d08d6cb3dbb42b5ac217c3ca4f7a38e",
+        "row_id": "9da2f34e6eb74a6aa791428dba556394",
         "source": "Wholesale (Xero)",
         "source_name": "Anton's Amber Vienna Lager 50L Keg",
         "serve": "Keg 50L",
@@ -10699,7 +10699,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "72554b40b1ad49b4a8330fb80523b921",
+        "row_id": "6a4e97a0e71643bc9a77f6b1f943ba78",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Keg",
         "serve": "Keg 50L",
@@ -10712,7 +10712,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "3194fca8daab45d9baa2c059bf975de7",
+        "row_id": "69f35580314842b09f0d9afa97b504eb",
         "source": "Wholesale (Xero)",
         "source_name": "Endless Summer XPA Case",
         "serve": "Case",
@@ -10725,7 +10725,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "97af62941ed84e2e8ea017a82f1c1903",
+        "row_id": "f932b04e80844bc59e34400bc6fd2e53",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Case",
         "serve": "Case",
@@ -10738,7 +10738,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "91a3460dd5184818b70d9adbb6cb4913",
+        "row_id": "377dcedfd5254f2e8bc492c334566f47",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA Case",
         "serve": "Case",
@@ -10751,7 +10751,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "e9456eafab3a4bbeb2d27329b10c19fb",
+        "row_id": "f4ae082919df47d68ac697f3a9fedbcd",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA Case",
         "serve": "Case",
@@ -10764,7 +10764,7 @@
         "abv": 0.067
       },
       {
-        "row_id": "93b90648bd3b4908ba4c1621c6917b31",
+        "row_id": "72364d7f87ad449d844ce2175f7b7b23",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager",
         "serve": "Case",
@@ -10777,7 +10777,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "96adcc81e31d48b0ad085d0976a4d6ae",
+        "row_id": "c0d6edb694b143d1998a1da2d7c64de0",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Case",
         "serve": "Case",
@@ -10790,7 +10790,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "430c3df1c15546429b300c14122269f2",
+        "row_id": "b8e5ae66c37f47e38d735bf1914ea3a3",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Case",
         "serve": "Case",
@@ -10803,7 +10803,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "ce5d6ce88cce42bc95fedbb93fa1f3fa",
+        "row_id": "a7cf87edd42c4811bfe3612992f7b86e",
         "source": "Wholesale (Xero)",
         "source_name": "Surf Mist Hazy XPA Case",
         "serve": "Case",
@@ -10816,7 +10816,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "e79bce348c0147668ca39bf5b15951c3",
+        "row_id": "228132b435034be1b7136d5a861d4b6a",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager 30L Keg",
         "serve": "Keg 30L",
@@ -10829,7 +10829,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "9e7bf4a0069f414ca8af80adf4e7de6c",
+        "row_id": "7c121a469d8545b0945925f65130bfd0",
         "source": "Wholesale (Xero)",
         "source_name": "Gundog Estate Pale Ale",
         "serve": "Case",
@@ -10843,7 +10843,7 @@
         "manually_assigned": true
       },
       {
-        "row_id": "603151745eef45c3b306273279203084",
+        "row_id": "2501f87af84b4093a913f42f181c3035",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager",
         "serve": "Case",
@@ -10856,7 +10856,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "9463f88bd014494495dc22e8447587cd",
+        "row_id": "3da35ad8091944eba74d9eaf8b58e582",
         "source": "Wholesale (Xero)",
         "source_name": "Surf Mist Hazy XPA Case",
         "serve": "Case",
@@ -10869,7 +10869,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "3598b473446b41d6b87dd2fe54921575",
+        "row_id": "45d115e05ef84a16bdfc9cd04686dd89",
         "source": "Wholesale (Xero)",
         "source_name": "Good Shepherd NZ Pilsner Case",
         "serve": "Case",
@@ -10882,7 +10882,7 @@
         "abv": 0.046
       },
       {
-        "row_id": "b777977b26cb4f178f9b0d6e7d43e3f6",
+        "row_id": "87260e329af14915bd1b2f28cba0ff7d",
         "source": "Wholesale (Xero)",
         "source_name": "Anton's Amber Vienna Lager Case",
         "serve": "Case",
@@ -10895,7 +10895,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "adc3dc9581a34f23aa80113c5891ae54",
+        "row_id": "194d8a7ee52b4a39a5f369bead3723fd",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Yuzu Lager Case",
         "serve": "Case",
@@ -10908,7 +10908,7 @@
         "abv": 0.04
       },
       {
-        "row_id": "407c19b220cc4dba87d6aaf6deaae91a",
+        "row_id": "e2f01d7b9e5f4c6c85fd355b660c4a5c",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Banana Rainbow Sherbet Case",
         "serve": "Case",
@@ -10921,7 +10921,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "a2763f9e695a4dc89c8042b075d30945",
+        "row_id": "84c020d0e5ae40399e7a0af7d62e457f",
         "source": "Wholesale (Xero)",
         "source_name": "Coastal Mid Strength Pale Ale Keg",
         "serve": "Keg 50L",
@@ -10934,7 +10934,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "df2d8a50dff34a6f98eee476a2f1ae75",
+        "row_id": "258505240a37490f966c437c5a82da83",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager 50L Keg",
         "serve": "Keg 50L",
@@ -10947,7 +10947,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "f5eb82feeba64377801293c92ad90b1f",
+        "row_id": "d294b3b660ca43ff91273eb387cf137d",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet Cube",
         "serve": "Case",
@@ -10960,7 +10960,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "77e197c63d9b4db3843225892e32a43c",
+        "row_id": "43557b98a3e54bc9824a7b6c59334a70",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale Keg",
         "serve": "Keg 50L",
@@ -10973,7 +10973,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "be7a8540d7dc4df38c29be3988727e1f",
+        "row_id": "4c8735efc265443ba7e02648cbe64831",
         "source": "Wholesale (Xero)",
         "source_name": "Surf Mist Hazy XPA Keg",
         "serve": "Keg 50L",
@@ -10986,7 +10986,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "db8549bc85b640cd811eeb2b1caf0660",
+        "row_id": "054ab98ec2be4794a60d6b2346456c98",
         "source": "Wholesale (Xero)",
         "source_name": "Gweilo Rainbow Sherbet",
         "serve": "Case",
@@ -10999,7 +10999,7 @@
         "abv": 0.06
       },
       {
-        "row_id": "e500027a87a94a249f51d0497f748499",
+        "row_id": "0a4ec55b27394f84aff8f54d48dabe61",
         "source": "Wholesale (Xero)",
         "source_name": "Queensie Lager",
         "serve": "Case",
@@ -11012,7 +11012,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "076d31c0a286498b9fc187b2b03cd47e",
+        "row_id": "c62df03e60bd4d62847dbd2575251a59",
         "source": "Wholesale (Xero)",
         "source_name": "Coastal Mid Strength Pale Ale",
         "serve": "Case",
@@ -11025,7 +11025,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "e9594879dd424fe9a8899b5cac16927d",
+        "row_id": "73727e5699f3462f8f0038cadf527163",
         "source": "Wholesale (Xero)",
         "source_name": "Coastal Mid Strength Pale Ale Keg",
         "serve": "Keg 50L",
@@ -11038,7 +11038,7 @@
         "abv": 0.033
       },
       {
-        "row_id": "a9edf8bb80f74f9bb61030f56d1ca0a8",
+        "row_id": "41e02e1e999140449b85f6b7886641f6",
         "source": "Wholesale (Xero)",
         "source_name": "Beachcomber Pale Ale 20L Keg",
         "serve": "Keg 20L",
@@ -11051,7 +11051,7 @@
         "abv": 0.05
       },
       {
-        "row_id": "8c83de32b70e4f07802c001f265de90e",
+        "row_id": "ddb67c8d16df4a8186cd846f0ec28330",
         "source": "Wholesale (Xero)",
         "source_name": "Surf Mist Hazy XPA 20L Keg",
         "serve": "Keg 20L",
@@ -11064,7 +11064,7 @@
         "abv": 0.041
       },
       {
-        "row_id": "e4d73e981dac40b8b61dfe75143d46f7",
+        "row_id": "d9e208247362453bb5ce16afa6a6bcc3",
         "source": "Wholesale (Xero)",
         "source_name": "Anton's Amber Vienna Lager 20L Keg",
         "serve": "Keg 20L",
@@ -11077,7 +11077,7 @@
         "abv": 0.048
       },
       {
-        "row_id": "bbd2bc87a5d24f3c9fe2a109fd24c013",
+        "row_id": "3c97710b63834434be95b06087cb69de",
         "source": "Wholesale (Xero)",
         "source_name": "Monsoon IPA 20L Keg",
         "serve": "Keg 20L",
@@ -11090,7 +11090,7 @@
         "abv": 0.064
       },
       {
-        "row_id": "a301da08b9354507a4953adbbb2a42c1",
+        "row_id": "3890bc0430174f1882649492aa40d259",
         "source": "Wholesale (Xero)",
         "source_name": "Hop Symphony 20L Keg",
         "serve": "Keg 20L",
@@ -11103,7 +11103,7 @@
         "abv": 0.054
       },
       {
-        "row_id": "cbc5574b885647f59f4064261b1df177",
+        "row_id": "776883593c1946ad8f23a1f0277a61c9",
         "source": "Wholesale (Xero)",
         "source_name": "Pier 39 West Coast IPA 20L Keg",
         "serve": "Keg 20L",
@@ -11218,8 +11218,16 @@
         "Package": "Can",
         "ABV": "6.0%",
         "Category": ">3.5%",
-        "Beer Volume (L)": 5.625,
-        "Taxable Ethanol (L)": 0.273
+        "Beer Volume (L)": 1.5,
+        "Taxable Ethanol (L)": 0.073
+      },
+      {
+        "Beer": "Gweilo Raspberry Waffle",
+        "Package": "Can",
+        "ABV": "6.0%",
+        "Category": ">3.5%",
+        "Beer Volume (L)": 4.125,
+        "Taxable Ethanol (L)": 0.2
       },
       {
         "Beer": "Gweilo Rocky Road Stout",
