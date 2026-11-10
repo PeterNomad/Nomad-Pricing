@@ -568,5 +568,20 @@
     "base_margin": 0.37,
     "royalty_pct": 0.1,
     "active": true
+  },
+  {
+    "name": "Brookie Draught",
+    "abv": 0.047,
+    "batch_size_l": 2400,
+    "can_size_l": 0.375,
+    "proportion_cans": 0.0,
+    "proportion_kegs": 1.0,
+    "cans_per_case": 16,
+    "keg_size_l": 50,
+    "pak_tech": false,
+    "raw_materials": 1736.85,
+    "base_margin": 0.37,
+    "royalty_pct": 0.1,
+    "active": true
   }
 ]
